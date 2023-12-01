@@ -1,4 +1,4 @@
-# simplifai
+# SimplifAI
 Converts any given text into 'plain language', a simplified form of writing designed to enhance understanding for people with diverse cognitive abilities.
 
 ### Introduction
