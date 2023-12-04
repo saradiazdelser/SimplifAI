@@ -14,6 +14,10 @@ How to Import the needed library:
 from google.cloud import aiplatform
 ```
 
+## Connect to Endpoint
+https://cloud.google.com/python/docs/reference/aiplatform/latest/google.cloud.aiplatform.Endpoint
+
+
 # Hosting 
 For the [TruEra Challenge](https://lablab.ai/event/truera-challenge-build-llm-applications) that we build this application a domain to reach the application is part of the Submission so in this section there are ways to easy host a Gradio application. 
 
