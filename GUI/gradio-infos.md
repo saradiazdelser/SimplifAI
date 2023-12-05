@@ -14,6 +14,22 @@ How to Import the needed library:
 from google.cloud import aiplatform
 ```
 
+https://codelabs.developers.google.com/vertex-p2p-predictions#5
+
+This is how to find the Project Number and ID and they are different: 
+https://console.cloud.google.com/home
+
+
+Fixed Credential Issue by:
+copying the `fine-acronym-407108-017b3c3578de.json`
+in the newly created
+`mkdir ~/.config/gcloud`
+
+Current Issue:
+```
+Unsupported region for Vertex AI, select from frozenset({'asia-east2', 'europe-southwest1', 'europe-west9', 'asia-northeast3', 'us-west2', 'asia-southeast1', 'me-west1', 'us-west4', 'asia-northeast1', 'australia-southeast1', 'us-east4', 'europe-west1', 'asia-south1', 'australia-southeast2', 'us-west3', 'us-west1', 'europe-west6', 'southamerica-west1', 'europe-west2', 'asia-east1', 'asia-northeast2', 'europe-west8', 'us-south1', 'southamerica-east1', 'us-central1', 'us-east1', 'europe-central2', 'europe-west4', 'asia-southeast2', 'northamerica-northeast2', 'europe-west3', 'europe-north1', 'northamerica-northeast1'})
+```
+
 ## Connect to Endpoint
 https://cloud.google.com/python/docs/reference/aiplatform/latest/google.cloud.aiplatform.Endpoint
 
