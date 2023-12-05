@@ -1,9 +1,9 @@
 import gradio as gr
 from google.cloud import aiplatform
 
-PROJECT_NUMBER = "713261100076"
-ENDPOINT_ID = "3910824321534132224"
-LOCATION = "us-central1"
+PROJECT_NUMBER = '713261100076'
+ENDPOINT_ID = '3910824321534132224'
+LOCATION = 'us-central1'
 
 # just a test function that simulates a prediction
 def predict(text):
@@ -12,7 +12,7 @@ def predict(text):
 """
 def predict(text):
     endpoint = aiplatform.Endpoint(
-        endpoint_name="projects/{PROJECT_NUMBER}/locations/{LOCATION}/endpoints/{ENDPOINT_ID}"
+        endpoint_name=f"projects/{PROJECT_NUMBER}/locations/{LOCATION}/endpoints/{ENDPOINT_ID}",
         )
     response = endpoint.predict(instances=[text])
     return response.predictions[0]
