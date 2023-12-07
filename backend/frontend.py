@@ -87,7 +87,10 @@ recorder = TruBasicApp(simplifyapp, app_id=f"simplify-app-v{version}", feedbacks
 
 
 def predict(text):
-    return recorder.app(text)
+    with recorder as recording:
+        rec = recorder.app(text)
+
+    return rec
 
 # ### Gradio Theme
 # theme = gr.themes.Base(
