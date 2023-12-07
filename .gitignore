@@ -160,4 +160,4 @@ cython_debug/
 #.idea/
 
 
-GUI/fine-acronym-407108-017b3c3578de.json
+GUI/*.json

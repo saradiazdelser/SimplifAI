@@ -78,11 +78,13 @@ with gr.Blocks(theme=theme) as demo:
 
         gr.Markdown("### Let's go and simplif-AI")
 
-        gr.Interface(
-                    fn=predict, 
-                    inputs=gr.Textbox(lines=5, placeholder="Put your complicated text here..."),
-                    outputs="text",
-        )
+        input_textbox = gr.Textbox(lines=5, placeholder="Put your complicated text here...")
+        submit_butn = gr.Button("Submit")
+        output_textbox = gr.Textbox()
+
+        submit_butn.click(fn=predict, inputs=input_textbox, outputs=output_textbox)
+
+
 
     with gr.Tab("About the App"):
         gr.Markdown("This App converts any given text into 'plain language', a simplified form of writing designed to enhance understanding for people with diverse cognitive abilities.")
