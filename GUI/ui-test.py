@@ -1,22 +1,58 @@
+import os
+import json
+import tempfile
 import gradio as gr
 from google.cloud import aiplatform
-
-PROJECT_NUMBER = '713261100076'
-ENDPOINT_ID = '3910824321534132224'
-LOCATION = 'us-central1'
+from google.oauth2.service_account import Credentials
+#import apiclient
+#from google.oauth2 import service_account
 
 # just a test function that simulates a prediction
-def predict(text):
-    return text + "this is the output of the model"
+#def predict(text):
+#    return text + "this is the output of the model"
 
-"""
+PROJECT_NUMBER = str(os.environ['PROJECT_NUMBER'])
+ENDPOINT_ID = str(os.environ['ENDPOINT_ID'])
+LOCATION = str(os.environ['LOCATION'])
+
+# process of getting credentials
+def get_credentials():
+    creds_json_str = os.getenv("CREDENTIALS_JSON") # get json credentials stored as a string
+    if creds_json_str is None:
+        raise ValueError("GOOGLE_APPLICATION_CREDENTIALS_JSON not found in environment")
+
+    # create a temporary file
+    with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".json") as temp:
+        temp.write(creds_json_str) # write in json format
+        temp_filename = temp.name 
+
+    return temp_filename
+    
+# pass
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]= get_credentials()
+
+
+
+
+def get_text_output_from_prediction(model_output):
+    return model_output[0].split("Output:")[1]
+
+
 def predict(text):
+    instances = [
+        {
+            "prompt": text ,
+            "max_tokens": 150,
+            "temperature": 1.0,
+            "top_p": 1.0,
+            "top_k": 10,
+        },
+    ]
     endpoint = aiplatform.Endpoint(
         endpoint_name=f"projects/{PROJECT_NUMBER}/locations/{LOCATION}/endpoints/{ENDPOINT_ID}",
         )
-    response = endpoint.predict(instances=[text])
-    return response.predictions[0]
-"""
+    response = endpoint.predict(instances=instances)
+    return get_text_output_from_prediction(response.predictions)
 
 ### Gradio Theme
 theme = gr.themes.Base(
@@ -30,7 +66,6 @@ theme = gr.themes.Base(
     
 with gr.Blocks(theme=theme) as demo:
 
-    #gr.HTML("<h1>Simplif AI</h1>")
     gr.Markdown("## Simplif AI")
 
     with gr.Tab("Input"):
