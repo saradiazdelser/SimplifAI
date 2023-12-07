@@ -4,6 +4,11 @@ import tempfile
 import gradio as gr
 from google.cloud import aiplatform
 from google.oauth2.service_account import Credentials
+
+#Use this to lines if you want to run it locally
+from set_env_variables import load_env_variables
+load_env_variables()
+
 #import apiclient
 #from google.oauth2 import service_account
 
@@ -11,6 +16,7 @@ from google.oauth2.service_account import Credentials
 #def predict(text):
 #    return text + "this is the output of the model"
 
+print(os.environ['TestVariable'])
 PROJECT_NUMBER = str(os.environ['PROJECT_NUMBER'])
 ENDPOINT_ID = str(os.environ['ENDPOINT_ID'])
 LOCATION = str(os.environ['LOCATION'])
@@ -79,13 +85,9 @@ with gr.Blocks(theme=theme) as demo:
         )
 
     with gr.Tab("About the App"):
-
         gr.Markdown("This App converts any given text into 'plain language', a simplified form of writing designed to enhance understanding for people with diverse cognitive abilities.")
-
         gr.Markdown("## Introduction")
-
         gr.Markdown("Many individuals with learning or mental disabilities encounter difficulties in comprehending standard English text, limiting their access to information and hindering effective communication. To tackle this issue, we propose a user-friendly web application that effortlessly converts any given English text into 'Plain English,' a simplified form of writing designed to enhance understanding for people with diverse cognitive abilities. By doing so, we aim to ensure that information is not only accessible but also inclusive. The target audience for our web app is broad, encompassing individuals with learning or mental disabilities, caregivers, educators, and anyone aiming to communicate with a diverse audience. By catering to the needs of this demographic, our application fosters inclusivity and ensures that information is comprehensible to a wider spectrum of users. The unique benefit lies in the simplicity of our solution – a tool that makes information universally accessible, bridging the gap and promoting a more inclusive digital environment.")
-
         gr.Markdown("Visit our [GitHub](https://github.com/saradiazdelser/SimplifAI/)")
 
 
