@@ -73,13 +73,64 @@ from langchain.llms import VertexAI
 version = 2
 def simplifyapp(original_text:str, verbose:bool=False):
     prompt_template = PromptTemplate(
-            template="Rewrite the following sentece using simple english: {text}",
+            template="""Context:
+                        Simple English Wikipedia is a version of the popular online encyclopedia, Wikipedia, that aims to present information in a language that is easy to understand for individuals with limited proficiency in English or those who are learning the language. Articles on Simple English Wikipedia are written with shorter sentences, simpler vocabulary, and a straightforward structure, making the content more accessible to a diverse audience. The primary goal is to provide clear and concise information on a wide range of topics, catering to readers who may find the regular English Wikipedia more challenging to comprehend. The simplicity of language in Simple English Wikipedia is intended to facilitate learning and understanding for a broad audience.
+                        Instruction: Translate the input text to Simple English Wikipedia format. Make sure it complies with the following requirements:
+                        - Express only one idea per sentence.
+                        - One sentence per line.
+                        - Make sure the subject of each sentence it is explicit. Do not use pronouns as subjects.
+                        - Use short sentences and simple language
+                        - Avoid negative sentences
+                        - Avoid using too many numbers or mathematical denominations. If there is no choice but to insert a number, always use digits.
+                        - Do not use confusing metaphors or comparisons.
+                        - Use only one message per sentence.
+                        - Be clear, concise and direct.
+                        - Use simple and direct language.
+                        - Avoid technical terms, abbreviations and initials.
+                        - The content must follow a clear and coherent order.
+                        - All unnecessary ideas, words, sentences or phrases should be avoided or deleted.
+                        - Explain in a simple way by means of a vocabulary, if necessary, those words that are words that are considered somewhat difficult to understand.
+                        Input text:
+                        {text}
+                        Output: """,
             input_variables=["text"],
         )
     llm = VertexAI()
     chain = LLMChain(llm=llm, prompt=prompt_template, verbose=verbose)
     llm_response = chain({'text':original_text})
     return llm_response['text'].strip()
+
+def simplifyapp_2(answer_text:str, concept:str):
+    #answer_text = original_text[0]
+    #concept = original_text[1]
+    
+    prompt_template = PromptTemplate(
+            template=    """Context:
+                Simple English Wikipedia is a version of the popular online encyclopedia, Wikipedia, that aims to present information in a language that is easy to understand for individuals with limited proficiency in English or those who are learning the language. Articles on Simple English Wikipedia are written with shorter sentences, simpler vocabulary, and a straightforward structure, making the content more accessible to a diverse audience. The primary goal is to provide clear and concise information on a wide range of topics, catering to readers who may find the regular English Wikipedia more challenging to comprehend. The simplicity of language in Simple English Wikipedia is intended to facilitate learning and understanding for a broad audience.
+                Instruction: Define the input concept with simple English Wikipedia format given the input context. Make sure it complies with the following requirements:
+                - Express only one idea per sentence.
+                - Make sure the subject of each sentence it is explicit. Do not use pronouns as subjects.
+                - Use short sentences and simple language
+                - Avoid negative sentences
+                - Avoid using too many numbers or mathematical denominations. If there is no choice but to insert a number, always use digits.
+                - Do not use confusing metaphors or comparisons.
+                - Use only one message per sentence.
+                - Be clear, concise and direct.
+                - Use simple and direct language.
+                - Avoid technical terms, abbreviations and initials.
+                - The content must follow a clear and coherent order.
+                - All unnecessary ideas, words, sentences or phrases should be avoided or deleted.
+                - Explain in a simple way by means of a vocabulary, if necessary, those words that are words that are considered somewhat difficult to understand.
+                Input context: {answer_text}
+                Input concept: {concept}
+                Output:""",
+            input_variables=["answer_text", "concept"],
+        )
+    llm = VertexAI(model_name="text-bison-32k")
+    chain = LLMChain(llm=llm, prompt=prompt_template)
+    llm_response = chain({'answer_text':answer_text, 'concept':concept})
+    return llm_response['text'].strip()
+
 
 
 from trulens_eval import TruBasicApp
@@ -103,11 +154,12 @@ def predict(text):
 
 def get_trulens_feedback():
     return tru.get_records_and_feedback(app_ids=[f'simplify-app-v{version}'])[0]
-
     
 with gr.Blocks() as demo:
 
-    gr.Markdown("## Simplif AI")
+    gr.Image(value="backend/logo.png", width=60)
+    gr.Markdown("# Simplif AI")
+        
 
     with gr.Tab("Input"):
 
@@ -119,6 +171,14 @@ with gr.Blocks() as demo:
 
         submit_butn.click(fn=predict, inputs=input_textbox, outputs=output_textbox)
 
+        gr.Markdown("### Get a Definition for a concept")
+
+        with gr.Row():
+            wd_input_textbox = gr.Textbox(lines=1, placeholder="Put a concept that you don't understand here...")
+            wd_submit_butn = gr.Button("Submit")
+        wd_output_textbox = gr.Textbox()
+
+        wd_submit_butn.click(fn=simplifyapp_2, inputs=[output_textbox, wd_input_textbox], outputs=wd_output_textbox)
 
 
     with gr.Tab("About the App"):
