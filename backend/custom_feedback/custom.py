@@ -44,6 +44,23 @@ def sentence_simplicity(sentence: str) -> float:
     return 0.0
 
 
+def pron_subjects_ratio(sentence: str) -> float:
+    """
+    Pronoun/Subject Ratio feedback function implementation.`pron_subjects_ratio` is a plain python method that accepts one piece
+    of text (string), and produces a float representing the rate of pronouns used as subjects ( 0.0 --none-- and 1.0 --all pronouns are subjects--) .
+    """
+    # Process the sentence with spaCy
+    doc = nlp(sentence)
+
+    subjects = [token for token in doc if token.dep_ == "nsubj"]
+    n_pron = [token for token in doc if token.pos_ == "PRON"]
+    
+    if len(subjects) > 0:
+        score = len(n_pron)/len(subjects)
+        return float(score)
+    return 0.0
+
+
 def bert_score(input_text:str, output_text:str) -> float:
     """
     Uses BERT Score. A function that that measures
@@ -58,11 +75,11 @@ def bert_score(input_text:str, output_text:str) -> float:
 
     """
 
-    bert_scorer = BERTScorer(lang="en", rescale_with_baseline=True)
-    bert_score = bert_scorer.score(
-                [output_text], [input_text]
-            )
-    score = bert_score if bert_score else 0.0
+    bert = eval.load('bert')
+    bert_score = bert.compute(
+        predictions=[output_text], references=[input_text]
+    )
+    score = bert_score['precision'] if bert_score['precision'] else 0.0
     return float(score)
 
 
