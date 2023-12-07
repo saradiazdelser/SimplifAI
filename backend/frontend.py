@@ -157,7 +157,12 @@ def get_trulens_feedback():
     
 with gr.Blocks() as demo:
 
-    gr.Image(value="backend/logo.png", width=60)
+
+    with open("backend/html/logo.html") as f:
+        HTML_LOGO = f.read().strip()
+ 
+    gr.HTML(HTML_LOGO)
+    #gr.Image(value="backend/logo.png", width=60)
     gr.Markdown("# Simplif AI")
         
 
@@ -194,9 +199,5 @@ with gr.Blocks() as demo:
 
         tl_submit_butn.click(fn=get_trulens_feedback, outputs=tl_output_textbox)
 
-        
 
-        
-
-
-demo.launch()
+demo.launch(allowed_paths=["html"])
