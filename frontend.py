@@ -63,24 +63,16 @@ tru = Tru()
 # tru.reset_database()
 
 def define_feedback()->List[Feedback]:
-    # hugs = Huggingface()
-    hugs = Dummy()
+    hugs = Huggingface()
     langmatch = Feedback(hugs.language_match).on_input_output()
-    piidetect = Feedback(hugs.pii_detection).on_input()
-    nottoxic = Feedback(hugs.not_toxic).on_output()
-
-    simplicity_in = Feedback(custom.sentence_simplicity).on_input()
-    simplicity_out = Feedback(custom.sentence_simplicity).on_output()
+    # nottoxic = Feedback(hugs.not_toxic).on_output() # not used because there's a bug
     is_simpler = Feedback(custom.is_simpler).on_input_output()
     ps_ratio_out = Feedback(custom.pron_subjects_ratio).on_output()
 
-    bertscore = Feedback(custom.bert_score).on_input_output()
     bleuscore = Feedback(custom.bleu).on_input_output()
-    rougescore = Feedback(custom.rouge).on_input_output()
     perplexityscore = Feedback(custom.perplexity).on_output()
 
-    # feedbacks = [langmatch, piidetect, nottoxic, simplicity_in, simplicity_out, is_simpler, bertscore, bleuscore, rougescore, perplexityscore]
-    feedbacks = [simplicity_in, simplicity_out, is_simpler, ps_ratio_out, bertscore, bleuscore, perplexityscore]
+    feedbacks = [langmatch, is_simpler, ps_ratio_out, bleuscore, perplexityscore]
     return feedbacks
 
 feedbacks = define_feedback()
