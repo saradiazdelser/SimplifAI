@@ -1,4 +1,22 @@
+
 import os
+run_in_huggingface = False
+
+
+##Use this lines if you want to run it on huggingface spaces
+if run_in_huggingface == True:
+    os.system("pip uninstall -y gradio")
+    os.system("pip install gradio==3.36.0")
+    os.system("pip uninstall -y pydantic")
+    os.system("pip install pydantic==1.10.13")
+    os.system("python -m spacy download en_core_web_sm")
+
+##Use this to lines if you want to run it locally
+else:
+    from helper_functions.set_env_variables import load_env_variables
+    load_env_variables()
+
+# All needed imports
 import json
 import tempfile
 import gradio as gr
@@ -14,14 +32,35 @@ from custom_feedback import custom
 from trulens_eval import Huggingface
 from trulens_eval.feedback.provider.hugs import Dummy
 
+
+#Setting up the environment secrets
+print(os.environ['TestVariable'])
+PROJECT_NUMBER = str(os.environ['PROJECT_NUMBER'])
+ENDPOINT_ID = str(os.environ['ENDPOINT_ID'])
+LOCATION = str(os.environ['LOCATION'])
+
+## process of getting credentials
+def get_credentials():
+    creds_json_str = os.getenv("CREDENTIALS_JSON") # get json credentials stored as a string
+    if creds_json_str is None:
+        raise ValueError("GOOGLE_APPLICATION_CREDENTIALS_JSON not found in environment")
+
+    # create a temporary file
+    with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".json") as temp:
+        temp.write(creds_json_str) # write in json format
+        temp_filename = temp.name 
+
+    return temp_filename
+    
+## pass
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]= get_credentials()
+
+
+# Trulens functions
 ## Initalizing of Trulens
 tru = Tru()
 tru.reset_database()
 CREDENTIAL_FILE_PATH = '' #! <--- CREDENTIALS HERE
-
-#Use this to lines if you want to run it locally
-from helper_functions.set_env_variables import load_env_variables
-load_env_variables()
 
 def define_feedback()->List[Feedback]:
     # hugs = Huggingface()
@@ -46,29 +85,33 @@ def define_feedback()->List[Feedback]:
 
 feedbacks = define_feedback()
 
-print(os.environ['TestVariable'])
-PROJECT_NUMBER = str(os.environ['PROJECT_NUMBER'])
-ENDPOINT_ID = str(os.environ['ENDPOINT_ID'])
-LOCATION = str(os.environ['LOCATION'])
+### Observability functions
+#from observability.observability import SimpleEnglishClassifier, GradioHTML, CustomIPython, CustomHTML
+def classify(text):
+    # calls the observability function
+    return [('[CLS]', 0.0),
+                 ('gothic', -4.6),
+                 ('architecture', -6.2),
+                 ('is', 1.7999999999999998),
+                 ('an', 1.0),
+                 ('architectural', -4.9),
+                 ('style', -6.800000000000001),
+                 ('that', -2.6),
+                 ('was', -1.6),
+                 ('prevalent', -8.7),
+                 ('in', -2.6),
+                 ('europe', 0.4),
+                 (',', -1.6),
+                 ('during', -2.9000000000000004),
+                 ('the', -1.7000000000000002),
+                 ('high', -2.6),
+                 ('and', -1.7999999999999998),
+                 ('of', -3.2),
+                 ('classical', -5.4),
+                 ('antiquity', -4.2)
+           ]
 
-# process of getting credentials
-def get_credentials():
-    creds_json_str = os.getenv("CREDENTIALS_JSON") # get json credentials stored as a string
-    if creds_json_str is None:
-        raise ValueError("GOOGLE_APPLICATION_CREDENTIALS_JSON not found in environment")
-
-    # create a temporary file
-    with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".json") as temp:
-        temp.write(creds_json_str) # write in json format
-        temp_filename = temp.name 
-
-    return temp_filename
-    
-# pass
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]= get_credentials()
-
-
-
+# Communication with the model
 from langchain.llms import VertexAI
 version = 2
 def simplifyapp(original_text:str, verbose:bool=False):
@@ -132,16 +175,18 @@ def simplifyapp_2(answer_text:str, concept:str):
     return llm_response['text'].strip()
 
 
-
 from trulens_eval import TruBasicApp
 recorder = TruBasicApp(simplifyapp, app_id=f"simplify-app-v{version}", feedbacks=feedbacks)
-
 
 def predict(text):
     with recorder as recording:
         rec = recorder.app(text)
 
     return rec
+
+
+def get_trulens_feedback():
+    return tru.get_records_and_feedback(app_ids=[f'simplify-app-v{version}'])[0]
 
 # ### Gradio Theme
 # theme = gr.themes.Base(
@@ -152,18 +197,17 @@ def predict(text):
 #     button_secondary_border_color='*primary_800'
 # )
 
-def get_trulens_feedback():
-    return tru.get_records_and_feedback(app_ids=[f'simplify-app-v{version}'])[0]
-    
+# Gradio UI for the fronted
 with gr.Blocks() as demo:
 
 
-    with open("backend/html/logo.html") as f:
-        HTML_LOGO = f.read().strip()
+    # with open("logo.html") as f:
+    #     HTML_LOGO = f.read().strip()
  
-    gr.HTML(HTML_LOGO)
-    #gr.Image(value="backend/logo.png", width=60)
-    gr.Markdown("# Simplif AI")
+    # gr.HTML(HTML_LOGO)
+
+    gr.Image(value="logo.png", width=60)
+    gr.Markdown("# Simplif AI 📝➡️✅")
         
 
     with gr.Tab("Input"):
@@ -176,7 +220,7 @@ with gr.Blocks() as demo:
 
         submit_butn.click(fn=predict, inputs=input_textbox, outputs=output_textbox)
 
-        gr.Markdown("### Get a Definition for a concept")
+        gr.Markdown("### Get a definition for a concept")
 
         with gr.Row():
             wd_input_textbox = gr.Textbox(lines=1, placeholder="Put a concept that you don't understand here...")
@@ -199,5 +243,17 @@ with gr.Blocks() as demo:
 
         tl_submit_butn.click(fn=get_trulens_feedback, outputs=tl_output_textbox)
 
+    with gr.Tab("Observability"):
 
-demo.launch(allowed_paths=["html"])
+        gr.Markdown("Visualization of Attribution for Complexity by token. Generated using TruLen Evaluation's implementation of Integrated Gradients.")
+        input_textbox = gr.Textbox(lines=5, placeholder="Put your text here...")
+        submit_butn2 = gr.Button("Submit")
+        explain_output = gr.HighlightedText(
+            label='COMPLEXITY ATTRIBUTION',
+            interactive=True,
+            combine_adjacent=True,
+            show_legend=True)
+
+        submit_butn2.click(fn=classify, inputs=input_textbox, outputs=explain_output)
+
+demo.launch()

@@ -7049,6 +7049,19 @@ tests = ["autopep8", "flake8", "isort", "numpy", "pytest", "scipy (>=1.7.1)"]
 tutorials = ["matplotlib", "pandas", "tabulate"]
 
 [[package]]
+name = "trulens"
+version = "0.13.4"
+description = "Library containing attribution and interpretation methods for deep nets."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "trulens-0.13.4-py3-none-any.whl", hash = "sha256:672f8f99e92d0fe9eee1b8ab0d74ac00b41d782951448888d3c406e6b215c4a9"},
+]
+
+[package.dependencies]
+numpy = ">=1.23.5"
+
+[[package]]
 name = "trulens-eval"
 version = "0.18.2"
 description = "Library to systematically track and evaluate LLM based applications."
@@ -7809,4 +7822,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.9.7 || >3.9.7,<3.12"
-content-hash = "c3fcf54483a4d267a0c716486ef76f5be9f945ac46d2ff095364cd17f25a8bc6"
+content-hash = "16d1a8710fd6b43c25d5d1ec596098cc4ef68f14249ef4bb1c2ab5523e298155"
