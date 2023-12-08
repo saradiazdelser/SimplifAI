@@ -191,15 +191,15 @@ def get_trulens_feedback():
     #column_names = df.columns.tolist()
     #print(column_names)
 
-    try: sub_df = df.loc[: ,['output','sentence_simplicity',
+    try: sub_df = df.loc[: ,['sentence_simplicity',
         'pron_subjects_ratio',
         'is_simpler','bleu', 'perplexity']]
     except:
-        sub_df = df.loc[: ,['output','sentence_simplicity',
+        sub_df = df.loc[: ,['sentence_simplicity',
         'pron_subjects_ratio',
         'is_simpler',]]
 
-    return sub_df
+    return sub_df, df.loc[0, 'output']
 
 # ### Gradio Theme
 # theme = gr.themes.Base(
@@ -252,10 +252,10 @@ with gr.Blocks() as demo:
     with gr.Tab("Trulens Metrics"):
 
         tl_submit_butn = gr.Button("Get Trulens Metrics")
-        #tl_output_textbox = gr.Textbox()
+        tl_output_textbox = gr.TextArea(label="Output:")
         tl_dataframe = gr.Dataframe()
 
-        tl_submit_butn.click(fn=get_trulens_feedback, outputs=tl_dataframe)
+        tl_submit_butn.click(fn=get_trulens_feedback, outputs=[tl_dataframe, tl_output_textbox])
 
     with gr.Tab("Observability"):
 
