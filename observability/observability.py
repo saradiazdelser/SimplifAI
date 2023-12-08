@@ -125,7 +125,7 @@ class CustomIPython(IPython):
 # Wrap all of the necessary components.
 class SimpleEnglishClassifier:
     
-    def __init__(self, model_path:str, resolution:int=20):
+    def __init__(self, model_path:str='saradiaz/distilbert-base-uncased-simpleEng-classifier', resolution:int=20):
         self.model_path = model_path
         self.resolution = resolution
     
