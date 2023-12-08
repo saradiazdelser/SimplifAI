@@ -2,7 +2,7 @@
 from typing import List
 
 from langchain.chains import LLMChain
-from langchain.llms import HuggingFaceHub, VertexAI, VertexAIModelGarden
+from langchain.llms import HuggingFaceHub, VertexAI
 from langchain.prompts import PromptTemplate
 from trulens_eval import Feedback, Huggingface
 
@@ -23,13 +23,26 @@ def define_feedback()->List[Feedback]:
     return feedbacks
 
 
+from prompts import SIMPLE_CONCEPT_PROMPT, SIMPLE_ENGLISH_PROMPT
 
-def simplifyapp(original_text:str, verbose:bool=False):
+
+def simplifyapp(original_text:str):
     prompt_template = PromptTemplate(
-            template="Rewrite the following sentece using simple english: {text}",
-            input_variables=["text"],
+            template=SIMPLE_ENGLISH_PROMPT['prompt_text'],
+            input_variables=SIMPLE_ENGLISH_PROMPT['variables'],
         )
     llm = VertexAI()
-    chain = LLMChain(llm=llm, prompt=prompt_template, verbose=verbose)
+    chain = LLMChain(llm=llm, prompt=prompt_template)
     llm_response = chain({'text':original_text})
+    return llm_response['text'].strip()
+
+
+def simplifyapp_2(answer_text:str, concept:str):
+    prompt_template = PromptTemplate(
+            template=SIMPLE_CONCEPT_PROMPT['prompt_text'],
+            input_variables=SIMPLE_CONCEPT_PROMPT['variables'],
+        )
+    llm = VertexAI(model_name="text-bison-32k")
+    chain = LLMChain(llm=llm, prompt=prompt_template)
+    llm_response = chain({'answer_text':answer_text, 'concept':concept})
     return llm_response['text'].strip()

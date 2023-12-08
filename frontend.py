@@ -62,22 +62,14 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"]= get_credentials()
 tru = Tru()
 # tru.reset_database()
 
-def define_feedback()->List[Feedback]:
-    hugs = Huggingface()
-    langmatch = Feedback(hugs.language_match).on_input_output()
-    # nottoxic = Feedback(hugs.not_toxic).on_output() # not used because there's a bug
-    is_simpler = Feedback(custom.is_simpler).on_input_output()
-    ps_ratio_out = Feedback(custom.pron_subjects_ratio).on_output()
 
-    bleuscore = Feedback(custom.bleu).on_input_output()
-    perplexityscore = Feedback(custom.perplexity).on_output()
+# Feedback Functions
+from chain import define_feedback
 
-    feedbacks = [langmatch, is_simpler, ps_ratio_out, bleuscore, perplexityscore]
-    return feedbacks
+feedbacks = define_feedback() # import all feedback functions from chain module to avoid clutter
 
-feedbacks = define_feedback()
 
-### Observability functions
+### Observability
 from observability.observability import GradioHTML, SimpleEnglishClassifier
 
 
@@ -90,73 +82,75 @@ def classify(text):
 
 
 # Communication with the model
-from langchain.llms import VertexAI
-
-version = 2
-def simplifyapp(original_text:str, verbose:bool=False):
-    prompt_template = PromptTemplate(
-            template="""Context:
-                        Simple English Wikipedia is a version of the popular online encyclopedia, Wikipedia, that aims to present information in a language that is easy to understand for individuals with limited proficiency in English or those who are learning the language. Articles on Simple English Wikipedia are written with shorter sentences, simpler vocabulary, and a straightforward structure, making the content more accessible to a diverse audience. The primary goal is to provide clear and concise information on a wide range of topics, catering to readers who may find the regular English Wikipedia more challenging to comprehend. The simplicity of language in Simple English Wikipedia is intended to facilitate learning and understanding for a broad audience.
-                        Instruction: Translate the input text to Simple English Wikipedia format. Make sure it complies with the following requirements:
-                        - Express only one idea per sentence.
-                        - One sentence per line.
-                        - Make sure the subject of each sentence it is explicit. Do not use pronouns as subjects.
-                        - Use short sentences and simple language
-                        - Avoid negative sentences
-                        - Avoid using too many numbers or mathematical denominations. If there is no choice but to insert a number, always use digits.
-                        - Do not use confusing metaphors or comparisons.
-                        - Use only one message per sentence.
-                        - Be clear, concise and direct.
-                        - Use simple and direct language.
-                        - Avoid technical terms, abbreviations and initials.
-                        - The content must follow a clear and coherent order.
-                        - All unnecessary ideas, words, sentences or phrases should be avoided or deleted.
-                        - Explain in a simple way by means of a vocabulary, if necessary, those words that are words that are considered somewhat difficult to understand.
-                        Input text:
-                        {text}
-                        Output: """,
-            input_variables=["text"],
-        )
-    llm = VertexAI()
-    chain = LLMChain(llm=llm, prompt=prompt_template, verbose=verbose)
-    llm_response = chain({'text':original_text})
-    return llm_response['text'].strip()
-
-def simplifyapp_2(answer_text:str, concept:str):
-    #answer_text = original_text[0]
-    #concept = original_text[1]
-    
-    prompt_template = PromptTemplate(
-            template=    """Context:
-                Simple English Wikipedia is a version of the popular online encyclopedia, Wikipedia, that aims to present information in a language that is easy to understand for individuals with limited proficiency in English or those who are learning the language. Articles on Simple English Wikipedia are written with shorter sentences, simpler vocabulary, and a straightforward structure, making the content more accessible to a diverse audience. The primary goal is to provide clear and concise information on a wide range of topics, catering to readers who may find the regular English Wikipedia more challenging to comprehend. The simplicity of language in Simple English Wikipedia is intended to facilitate learning and understanding for a broad audience.
-                Instruction: Define the input concept with simple English Wikipedia format given the input context. Make sure it complies with the following requirements:
-                - Express only one idea per sentence.
-                - Make sure the subject of each sentence it is explicit. Do not use pronouns as subjects.
-                - Use short sentences and simple language
-                - Avoid negative sentences
-                - Avoid using too many numbers or mathematical denominations. If there is no choice but to insert a number, always use digits.
-                - Do not use confusing metaphors or comparisons.
-                - Use only one message per sentence.
-                - Be clear, concise and direct.
-                - Use simple and direct language.
-                - Avoid technical terms, abbreviations and initials.
-                - The content must follow a clear and coherent order.
-                - All unnecessary ideas, words, sentences or phrases should be avoided or deleted.
-                - Explain in a simple way by means of a vocabulary, if necessary, those words that are words that are considered somewhat difficult to understand.
-                Input context: {answer_text}
-                Input concept: {concept}
-                Output:""",
-            input_variables=["answer_text", "concept"],
-        )
-    llm = VertexAI(model_name="text-bison-32k")
-    chain = LLMChain(llm=llm, prompt=prompt_template)
-    llm_response = chain({'answer_text':answer_text, 'concept':concept})
-    return llm_response['text'].strip()
-
-
+version = 5
 from trulens_eval import TruBasicApp
 
-recorder = TruBasicApp(simplifyapp, app_id=f"simplify-app-v{version}", feedbacks=feedbacks)
+from chain import simplifyapp, simplifyapp_2
+
+# from langchain.llms import VertexAI
+# def simplifyapp(original_text:str):
+#     prompt_template = PromptTemplate(
+#             template="""Context:
+#                         Simple English Wikipedia is a version of the popular online encyclopedia, Wikipedia, that aims to present information in a language that is easy to understand for individuals with limited proficiency in English or those who are learning the language. Articles on Simple English Wikipedia are written with shorter sentences, simpler vocabulary, and a straightforward structure, making the content more accessible to a diverse audience. The primary goal is to provide clear and concise information on a wide range of topics, catering to readers who may find the regular English Wikipedia more challenging to comprehend. The simplicity of language in Simple English Wikipedia is intended to facilitate learning and understanding for a broad audience.
+#                         Instruction: Translate the input text to Simple English Wikipedia format. Make sure it complies with the following requirements:
+#                         - Express only one idea per sentence.
+#                         - One sentence per line.
+#                         - Make sure the subject of each sentence it is explicit. Do not use pronouns as subjects.
+#                         - Use short sentences and simple language
+#                         - Avoid negative sentences
+#                         - Avoid using too many numbers or mathematical denominations. If there is no choice but to insert a number, always use digits.
+#                         - Do not use confusing metaphors or comparisons.
+#                         - Use only one message per sentence.
+#                         - Be clear, concise and direct.
+#                         - Use simple and direct language.
+#                         - Avoid technical terms, abbreviations and initials.
+#                         - The content must follow a clear and coherent order.
+#                         - All unnecessary ideas, words, sentences or phrases should be avoided or deleted.
+#                         - Explain in a simple way by means of a vocabulary, if necessary, those words that are words that are considered somewhat difficult to understand.
+#                         Input text:
+#                         {text}
+#                         Output: """,
+#             input_variables=["text"],
+#         )
+#     llm = VertexAI()
+#     chain = LLMChain(llm=llm, prompt=prompt_template)
+#     llm_response = chain({'text':original_text})
+#     return llm_response['text'].strip()
+
+# def simplifyapp_2(answer_text:str, concept:str):
+#     #answer_text = original_text[0]
+#     #concept = original_text[1]
+    
+#     prompt_template = PromptTemplate(
+#             template=    """Context:
+#                 Simple English Wikipedia is a version of the popular online encyclopedia, Wikipedia, that aims to present information in a language that is easy to understand for individuals with limited proficiency in English or those who are learning the language. Articles on Simple English Wikipedia are written with shorter sentences, simpler vocabulary, and a straightforward structure, making the content more accessible to a diverse audience. The primary goal is to provide clear and concise information on a wide range of topics, catering to readers who may find the regular English Wikipedia more challenging to comprehend. The simplicity of language in Simple English Wikipedia is intended to facilitate learning and understanding for a broad audience.
+#                 Instruction: Define the input concept with simple English Wikipedia format given the input context. Make sure it complies with the following requirements:
+#                 - Express only one idea per sentence.
+#                 - Make sure the subject of each sentence it is explicit. Do not use pronouns as subjects.
+#                 - Use short sentences and simple language
+#                 - Avoid negative sentences
+#                 - Avoid using too many numbers or mathematical denominations. If there is no choice but to insert a number, always use digits.
+#                 - Do not use confusing metaphors or comparisons.
+#                 - Use only one message per sentence.
+#                 - Be clear, concise and direct.
+#                 - Use simple and direct language.
+#                 - Avoid technical terms, abbreviations and initials.
+#                 - The content must follow a clear and coherent order.
+#                 - All unnecessary ideas, words, sentences or phrases should be avoided or deleted.
+#                 - Explain in a simple way by means of a vocabulary, if necessary, those words that are words that are considered somewhat difficult to understand.
+#                 Input context: {answer_text}
+#                 Input concept: {concept}
+#                 Output:""",
+#             input_variables=["answer_text", "concept"],
+#         )
+#     llm = VertexAI(model_name="text-bison-32k")
+#     chain = LLMChain(llm=llm, prompt=prompt_template)
+#     llm_response = chain({'answer_text':answer_text, 'concept':concept})
+#     return llm_response['text'].strip()
+
+
+
+recorder = TruBasicApp(simplifyapp, app_id=f"simplifAI-app-v{version}", feedbacks=feedbacks)
 
 def predict(text):
     with recorder as recording:
@@ -166,7 +160,7 @@ def predict(text):
 
 
 def get_trulens_feedback():
-    df = tru.get_records_and_feedback(app_ids=[f'simplify-app-v{version}'])[0] # pass an empty list of app_ids to get all
+    df = tru.get_records_and_feedback(app_ids=[f'simplifAI-app-v{version}'])[0] # pass an empty list of app_ids to get all
 
     #column_names = df.columns.tolist()
     #print(column_names)
