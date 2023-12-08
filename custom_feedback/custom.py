@@ -15,6 +15,24 @@ def is_simpler(input_text: str, output_text:str) -> float:
     score = 1.0 if (simplicity_out > simplicity_in) else 0.0
     return float(score)
 
+def pron_subjects_ratio(input_text: str) -> float:
+    """
+    Pronoun/Subject Ratio feedback function implementation.`pron_subjects_ratio` is a plain python method that accepts one piece
+    of text (string), and produces a float representing the rate of pronouns used as subjects ( 0.0 --none-- and 1.0 --all pronouns are subjects--) .
+    """
+    # Process the sentence with spaCy
+    doc = nlp(input_text)
+
+    subjects = [token for token in doc if token.dep_ == "nsubj"]
+    n_pron = [token for token in doc if token.pos_ == "PRON"]
+    
+    if len(subjects) > 0:
+        score = len(n_pron)/len(subjects)
+        # because the smaller the ratio the better
+        return float(1-score)
+    return 0.0
+
+
 def sentence_simplicity(sentence: str) -> float:
     """
     Simplicity feedback function implementation.`Sentence_simplicity` is a plain python method that accepts one piece
@@ -39,25 +57,8 @@ def sentence_simplicity(sentence: str) -> float:
 
         # Combine features into a single score
         score = (0.5*average_children + 0.5*average_noun_chucks) / sentence_length
-        return float(score)
+        return float(1-score)
     
-    return 0.0
-
-
-def pron_subjects_ratio(sentence: str) -> float:
-    """
-    Pronoun/Subject Ratio feedback function implementation.`pron_subjects_ratio` is a plain python method that accepts one piece
-    of text (string), and produces a float representing the rate of pronouns used as subjects ( 0.0 --none-- and 1.0 --all pronouns are subjects--) .
-    """
-    # Process the sentence with spaCy
-    doc = nlp(sentence)
-
-    subjects = [token for token in doc if token.dep_ == "nsubj"]
-    n_pron = [token for token in doc if token.pos_ == "PRON"]
-    
-    if len(subjects) > 0:
-        score = len(n_pron)/len(subjects)
-        return float(score)
     return 0.0
 
 
@@ -82,7 +83,6 @@ def bert_score(input_text:str, output_text:str) -> float:
     score = bert_score['precision'] if bert_score['precision'] else 0.0
     return float(score)
 
-
 def bleu(input_text:str, output_text:str) -> float:
     """
     Uses BLEU Score. A function that that measures
@@ -101,7 +101,7 @@ def bleu(input_text:str, output_text:str) -> float:
     bleu_score = bleu.compute(
         predictions=[output_text], references=[input_text]
     )
-    score = bleu_score['bleu'] if bleu_score['bleu'] else 0.0
+    score = 1-bleu_score['bleu'] if bleu_score['bleu'] else 0.0
     return float(score)
 
 def rouge(input_text:str, output_text:str) -> float:
