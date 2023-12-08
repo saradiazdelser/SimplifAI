@@ -1,5 +1,6 @@
 
 import os
+
 run_in_huggingface = False
 
 
@@ -19,19 +20,19 @@ else:
 # All needed imports
 import json
 import tempfile
+from typing import List
+
 import gradio as gr
 from google.cloud import aiplatform
 from google.oauth2.service_account import Credentials
-from langchain.chains import LLMChain
-from langchain.prompts import PromptTemplate
-from langchain.llms import VertexAIModelGarden, HuggingFaceHub
 from IPython.display import JSON
+from langchain.chains import LLMChain
+from langchain.llms import HuggingFaceHub, VertexAIModelGarden
+from langchain.prompts import PromptTemplate
 from trulens_eval import Feedback, Huggingface, Tru
-from typing import List
-from custom_feedback import custom
-from trulens_eval import Huggingface
 from trulens_eval.feedback.provider.hugs import Dummy
 
+from custom_feedback import custom
 
 #Setting up the environment secrets
 print(os.environ['TestVariable'])
@@ -59,60 +60,38 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"]= get_credentials()
 # Trulens functions
 ## Initalizing of Trulens
 tru = Tru()
-tru.reset_database()
-CREDENTIAL_FILE_PATH = '' #! <--- CREDENTIALS HERE
+# tru.reset_database()
 
 def define_feedback()->List[Feedback]:
-    # hugs = Huggingface()
-    hugs = Dummy()
+    hugs = Huggingface()
     langmatch = Feedback(hugs.language_match).on_input_output()
-    piidetect = Feedback(hugs.pii_detection).on_input()
-    nottoxic = Feedback(hugs.not_toxic).on_output()
-
-    simplicity_in = Feedback(custom.sentence_simplicity).on_input()
-    simplicity_out = Feedback(custom.sentence_simplicity).on_output()
+    # nottoxic = Feedback(hugs.not_toxic).on_output() # not used because there's a bug
     is_simpler = Feedback(custom.is_simpler).on_input_output()
     ps_ratio_out = Feedback(custom.pron_subjects_ratio).on_output()
 
-    bertscore = Feedback(custom.bert_score).on_input_output()
     bleuscore = Feedback(custom.bleu).on_input_output()
-    rougescore = Feedback(custom.rouge).on_input_output()
     perplexityscore = Feedback(custom.perplexity).on_output()
 
-    # feedbacks = [langmatch, piidetect, nottoxic, simplicity_in, simplicity_out, is_simpler, bertscore, bleuscore, rougescore, perplexityscore]
-    feedbacks = [simplicity_in, simplicity_out, is_simpler, ps_ratio_out, bertscore, bleuscore, perplexityscore]
+    feedbacks = [langmatch, is_simpler, ps_ratio_out, bleuscore, perplexityscore]
     return feedbacks
 
 feedbacks = define_feedback()
 
 ### Observability functions
-#from observability.observability import SimpleEnglishClassifier, GradioHTML, CustomIPython, CustomHTML
+from observability.observability import GradioHTML, SimpleEnglishClassifier
+
+
 def classify(text):
-    # calls the observability function
-    return [('[CLS]', 0.0),
-                 ('gothic', -4.6),
-                 ('architecture', -6.2),
-                 ('is', 1.7999999999999998),
-                 ('an', 1.0),
-                 ('architectural', -4.9),
-                 ('style', -6.800000000000001),
-                 ('that', -2.6),
-                 ('was', -1.6),
-                 ('prevalent', -8.7),
-                 ('in', -2.6),
-                 ('europe', 0.4),
-                 (',', -1.6),
-                 ('during', -2.9000000000000004),
-                 ('the', -1.7000000000000002),
-                 ('high', -2.6),
-                 ('and', -1.7999999999999998),
-                 ('of', -3.2),
-                 ('classical', -5.4),
-                 ('antiquity', -4.2)
-           ]
+    classifier_id = 'saradiaz/distilbert-base-uncased-simpleEng-classifier'
+    task = SimpleEnglishClassifier(model_path=classifier_id, resolution=5)
+    title, results = task.visualization(texts=[text], output_type=GradioHTML())
+    attributions = results[1:]
+    return attributions
+
 
 # Communication with the model
 from langchain.llms import VertexAI
+
 version = 2
 def simplifyapp(original_text:str, verbose:bool=False):
     prompt_template = PromptTemplate(
@@ -176,6 +155,7 @@ def simplifyapp_2(answer_text:str, concept:str):
 
 
 from trulens_eval import TruBasicApp
+
 recorder = TruBasicApp(simplifyapp, app_id=f"simplify-app-v{version}", feedbacks=feedbacks)
 
 def predict(text):
@@ -265,9 +245,7 @@ with gr.Blocks(theme=theme) as demo:
 
     with gr.Tab("Observability"):
 
-        gr.Markdown("# !⚠️ this function is currently hardcoded because we have some dependency issues from backend to frontend. But the implementation will be online soon !")
-
-        gr.Markdown("Visualization of Attribution for Complexity by token. Generated using TruLen Evaluation's implementation of Integrated Gradients.")
+        gr.Markdown("Visualization of Attribution for Complexity by token. Generated using TruLen Explainability's implementation of Integrated Gradients.")
         input_textbox = gr.Textbox(lines=5, placeholder="Put your text here...")
         submit_butn2 = gr.Button("Submit")
         explain_output = gr.HighlightedText(
