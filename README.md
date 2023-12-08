@@ -1,5 +1,5 @@
 # SimplifAI
-Converts any given text into 'plain language', a simplified form of writing designed to enhance understanding for people with diverse cognitive abilities.
+Converts any given text into 'simple language', a simplified form of writing designed to enhance understanding for people with diverse cognitive abilities.
 
 ### Introduction
 Many individuals with learning or mental disabilities encounter difficulties in comprehending standard English text, limiting their access to information and hindering effective communication.
