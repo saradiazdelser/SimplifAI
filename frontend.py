@@ -199,19 +199,25 @@ def get_trulens_feedback():
         'pron_subjects_ratio',
         'is_simpler',]]
 
-    return sub_df, df.loc[0, 'output']
+    return sub_df.iloc[-1:], df.loc[0, 'output']
 
-# ### Gradio Theme
-# theme = gr.themes.Base(
-#     primary_hue="violet",
-#     font=[gr.themes.GoogleFont('San Serif'), 'ui-sans-serif', 'system-ui', 'sans-serif'],
-#     # Different Fonts I tried: Archivo Black, Anton
-# ).set(
-#     button_secondary_border_color='*primary_800'
-# )
+ ### Gradio Theme
+theme = gr.themes.Default(
+     #font="https://db.onlinewebfonts.com/c/1c6b6cddab6609324d9016562358e0cd?family=Biome+W04+Regular",
+     primary_hue=gr.themes.colors.emerald,
+     secondary_hue=gr.themes.colors.green,
+    )
+    # ).set(
+    #     body_text_color="white",
+    #     #background_fill_primary="*primary_800",
+    #     #but="*primary_200",
+    #     button_color
+    #     #button_primary_background_fill_hover="*primary_300",
+    # )
+
 
 # Gradio UI for the fronted
-with gr.Blocks() as demo:
+with gr.Blocks(theme=theme) as demo:
 
 
     # with open("logo.html") as f:
@@ -220,7 +226,7 @@ with gr.Blocks() as demo:
     # gr.HTML(HTML_LOGO)
 
     gr.Image(value="logo.png", width=60)
-    gr.Markdown("# Simplif AI 📝➡️✅")
+    #gr.Markdown("# Simplif AI 📝➡️✅")
         
 
     with gr.Tab("Input"):
@@ -258,6 +264,8 @@ with gr.Blocks() as demo:
         tl_submit_butn.click(fn=get_trulens_feedback, outputs=[tl_dataframe, tl_output_textbox])
 
     with gr.Tab("Observability"):
+
+        gr.Markdown("# !⚠️ this function is currently hardcoded because we have some dependency issues from backend to frontend. But the implementation will be online soon !")
 
         gr.Markdown("Visualization of Attribution for Complexity by token. Generated using TruLen Evaluation's implementation of Integrated Gradients.")
         input_textbox = gr.Textbox(lines=5, placeholder="Put your text here...")
