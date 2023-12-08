@@ -186,7 +186,20 @@ def predict(text):
 
 
 def get_trulens_feedback():
-    return tru.get_records_and_feedback(app_ids=[f'simplify-app-v{version}'])[0]
+    df = tru.get_records_and_feedback(app_ids=[f'simplify-app-v{version}'])[0] # pass an empty list of app_ids to get all
+
+    #column_names = df.columns.tolist()
+    #print(column_names)
+
+    try: sub_df = df.loc[: ,['output','sentence_simplicity',
+        'pron_subjects_ratio',
+        'is_simpler','bleu', 'perplexity']]
+    except:
+        sub_df = df.loc[: ,['output','sentence_simplicity',
+        'pron_subjects_ratio',
+        'is_simpler',]]
+
+    return sub_df
 
 # ### Gradio Theme
 # theme = gr.themes.Base(
@@ -239,9 +252,10 @@ with gr.Blocks() as demo:
     with gr.Tab("Trulens Metrics"):
 
         tl_submit_butn = gr.Button("Get Trulens Metrics")
-        tl_output_textbox = gr.Textbox()
+        #tl_output_textbox = gr.Textbox()
+        tl_dataframe = gr.Dataframe()
 
-        tl_submit_butn.click(fn=get_trulens_feedback, outputs=tl_output_textbox)
+        tl_submit_butn.click(fn=get_trulens_feedback, outputs=tl_dataframe)
 
     with gr.Tab("Observability"):
 
