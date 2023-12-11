@@ -27,6 +27,10 @@ from prompts import SIMPLE_CONCEPT_PROMPT, SIMPLE_ENGLISH_PROMPT
 
 
 def simplifyapp(original_text:str):
+    
+    if len(original_text) < 50:
+        return "Please input a longer text."
+    
     prompt_template = PromptTemplate(
             template=SIMPLE_ENGLISH_PROMPT['prompt_text'],
             input_variables=SIMPLE_ENGLISH_PROMPT['variables'],
