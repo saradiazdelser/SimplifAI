@@ -20,7 +20,7 @@ Instruction: Translate the input text to Simple English Wikipedia format. Make s
 Input text:
 {text}
 Output: """,
-    'variables' = ['text']
+    'variables' : ['text']
 }
 
 SIMPLE_CONCEPT_PROMPT = {
@@ -43,6 +43,6 @@ Instruction: Define the input concept with simple English Wikipedia format given
 Input context: {answer_text}
 Input concept: {concept}
 Output:""",
-    'variables' = ['answer_text', 'concept']
+    'variables' : ['answer_text', 'concept']
 }
 

@@ -595,6 +595,16 @@ files = [
 pycparser = "*"
 
 [[package]]
+name = "chain"
+version = "1.0"
+description = "A fluent list wrapper."
+optional = false
+python-versions = "*"
+files = [
+    {file = "chain-1.0.tar.gz", hash = "sha256:4bd13dde3b4e75d5639e80740263cc7485602d5dd8612e218f6b5b2107c9c886"},
+]
+
+[[package]]
 name = "charset-normalizer"
 version = "3.3.2"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
@@ -7822,4 +7832,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.9.7 || >3.9.7,<3.12"
-content-hash = "16d1a8710fd6b43c25d5d1ec596098cc4ef68f14249ef4bb1c2ab5523e298155"
+content-hash = "14f783b1c77f2dc1ca76b87cef8008d7e3e7cfec0188b931763c86087a331eae"
