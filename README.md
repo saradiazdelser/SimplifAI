@@ -1,4 +1,7 @@
+## TruEra Challenge: Build LLM Applications with Google Cloud Vertex AI
+
 # SimplifAI
+
 SimplifAI is a user-friendly web application that transforms English text into 'Simple English,' a simplified form designed to enhance understanding for individuals with diverse cognitive abilities.
 
 ### Introduction
