@@ -1,8 +1,10 @@
 
 from typing import List
 
+import os
+
 from langchain.chains import LLMChain
-from langchain.llms import HuggingFaceHub, VertexAI
+from langchain.llms import HuggingFaceHub, VertexAI, HuggingFaceTextGenInference
 from langchain.prompts import PromptTemplate
 from trulens_eval import Feedback, Huggingface
 
@@ -35,7 +37,19 @@ def simplifyapp(original_text:str):
             template=SIMPLE_ENGLISH_PROMPT['prompt_text'],
             input_variables=SIMPLE_ENGLISH_PROMPT['variables'],
         )
-    llm = VertexAI()
+    if os.environ['ModelType'] == "VertexAI":
+        llm = VertexAI()
+    elif os.environ['ModelType'] == "CTC_Madrid":
+        llm = HuggingFaceTextGenInference(
+            inference_server_url="http://10.10.78.11:8081/",
+            max_new_tokens=512,
+            top_k=10,
+            top_p=0.95,
+            typical_p=0.95,
+            temperature=0.01,
+            repetition_penalty=1.03,
+        )
+    
     chain = LLMChain(llm=llm, prompt=prompt_template)
     llm_response = chain({'text':original_text})
     return llm_response['text'].strip()

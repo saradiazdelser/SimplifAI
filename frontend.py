@@ -26,9 +26,6 @@ import gradio as gr
 from google.cloud import aiplatform
 from google.oauth2.service_account import Credentials
 from IPython.display import JSON
-from langchain.chains import LLMChain
-from langchain.llms import HuggingFaceHub, VertexAIModelGarden
-from langchain.prompts import PromptTemplate
 from trulens_eval import Feedback, Huggingface, Tru
 from trulens_eval.feedback.provider.hugs import Dummy
 
@@ -54,7 +51,8 @@ def get_credentials():
     return temp_filename
     
 ## pass
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]= get_credentials()
+if os.environ['ModelType'] == "VertexAI":
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"]= get_credentials()
 
 
 # Trulens functions
