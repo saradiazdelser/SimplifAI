@@ -6,3 +6,4 @@ spacy==3.7.3
 bert_score==0.3.13
 trulens==0.13.4
 scipy==1.12.0
+text_generation
