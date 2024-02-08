@@ -9,6 +9,7 @@ import os
 
 from helper_functions.set_env_variables import load_env_variables
 import tempfile
+import pandas as pd
 import gradio as gr
 from trulens_eval import Tru, TruBasicApp
 from chain import define_feedback, simplify_text, explain_term
@@ -55,30 +56,14 @@ def get_trulens_feedback():
     # pass an empty list of app_ids to get all
     df = tru.get_records_and_feedback(app_ids=[f"simplifAI-app-v{version}"])[0]
 
-    try:
-        sub_df = df.loc[
-            :,
-            [
-                "language_match",
-                "pron_subjects_ratio",
-                "is_simpler",
-                "bleu",
-                "perplexity",
-            ],
-        ]
-    except:
-        try:
-            sub_df = df.loc[
-                :,
-                [
-                    "language_match",
-                    "pron_subjects_ratio",
-                    "is_simpler",
-                ],
-            ]
-
+    interesting_metrcs = ["language_match","pron_subjects_ratio","is_simpler","bleu","perplexity"]
+    
+    sub_df = pd.DataFrame()
+    for metric in interesting_metrcs:
+        try: 
+            sub_df[metric] = df[metric]
         except:
-            sub_df = df
+            print(f"Didn't found {metric} in TruLens result")
 
     return sub_df.iloc[-1:], df.loc[len(df.index) - 1]["output"]
 

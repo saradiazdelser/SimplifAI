@@ -7,23 +7,15 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.9.7 || >3.9.7,<3.12"
-trulens-eval = "^0.18.2"
-ipython = "^8.18.1"
-langchain = "^0.0.346"
-google = "^3.0.0"
-google-cloud-aiplatform = "^1.37.0"
-jupyterlab = "^4.0.9"
-evaluate = "^0.4.1"
-spacy = "^3.7.2"
-bert-score = "^0.3.13"
-textacy = "^0.13.0"
-absl-py = "^2.0.0"
-torch = "^2.1.1"
-python-decouple = "^3.8"
-gradio = "3.36.0"
-trulens = "^0.13.4"
-chain = "^1.0"
-
+trulens_eval = "0.18.2"
+evaluate = "0.4.1"
+spacy = "3.7.3"
+bert_score= "0.3.13"
+gradio = "3.41.0"
+trulens = "0.13.4"
+scipy= "1.12.0"
+text-generation = "0.6.1"
+llama-index = "0.8.69"
 
 [build-system]
 requires = ["poetry-core"]
