@@ -1,8 +1,8 @@
 SIMPLE_ENGLISH_PROMPT = {
-    'prompt_text' : 
-"""Simple English is a version of the English language that aims to present information in a way that is easy to understand for individuals with limited proficiency in English or those who are learning the language. Text in on Simple English are written with shorter sentences, simpler vocabulary, and a straightforward structure, making the content more accessible to a diverse audience. The primary goal is to provide clear and concise information on a wide range of topics, catering to readers who may find the regular English more challenging to comprehend. The simplicity of language in Simple English is intended to facilitate learning and understanding for a broad audience.
+    "prompt_text": """Simple English is a version of the English language that aims to present information in a way that is easy to understand for individuals with limited proficiency in English or those who are learning the language. Text in on Simple English are written with shorter sentences, simpler vocabulary, and a straightforward structure, making the content more accessible to a diverse audience. The primary goal is to provide clear and concise information on a wide range of topics, catering to readers who may find the regular English more challenging to comprehend. The simplicity of language in Simple English is intended to facilitate learning and understanding for a broad audience.
 Instruction: Translate the input text to Simple English. Make sure it complies with the following requirements:
 - Express only one idea per sentence.
+- Each sentence should not start with a list number.
 - One sentence per line.
 - Make sure the subject of each sentence it is explicit. Do not use pronouns as subjects.
 - Use short sentences and simple language
@@ -20,12 +20,11 @@ If the input text is already in Simple English, say "The input text is already i
 Input text:
 {text}
 Output text: """,
-    'variables' : ['text']
+    "variables": ["text"],
 }
 
 SIMPLE_CONCEPT_PROMPT = {
-     'prompt_text' :
-"""Simple English is a version of the English language that aims to present information in a way that is easy to understand for individuals with limited proficiency in English or those who are learning the language. Text in on Simple English are written with shorter sentences, simpler vocabulary, and a straightforward structure, making the content more accessible to a diverse audience. The primary goal is to provide clear and concise information on a wide range of topics, catering to readers who may find the regular English more challenging to comprehend. The simplicity of language in Simple English is intended to facilitate learning and understanding for a broad audience.
+    "prompt_text": """Simple English is a version of the English language that aims to present information in a way that is easy to understand for individuals with limited proficiency in English or those who are learning the language. Text in on Simple English are written with shorter sentences, simpler vocabulary, and a straightforward structure, making the content more accessible to a diverse audience. The primary goal is to provide clear and concise information on a wide range of topics, catering to readers who may find the regular English more challenging to comprehend. The simplicity of language in Simple English is intended to facilitate learning and understanding for a broad audience.
 Instruction: Define the input concept in Simple English within the given input context. Make sure it complies with the following requirements:
 - Express only one idea per sentence.
 - Make sure the subject of each sentence it is explicit. Do not use pronouns as subjects.
@@ -43,6 +42,5 @@ Instruction: Define the input concept in Simple English within the given input c
 Input context: {answer_text}
 Input concept: {concept}
 Output:""",
-    'variables' : ['answer_text', 'concept']
+    "variables": ["answer_text", "concept"],
 }
-
