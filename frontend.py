@@ -1,4 +1,13 @@
 import os
+import tempfile
+
+import gradio as gr
+import pandas as pd
+from trulens_eval import Tru, TruBasicApp
+
+from chain import define_feedback, explain_term, simplify_text
+from helper_functions.set_env_variables import load_env_variables
+from observability.observability import GradioHTML, SimpleEnglishClassifier
 
 # uncomment these lines if running on HuggingFace
 # os.system("pip uninstall -y gradio")
@@ -7,13 +16,6 @@ import os
 # os.system("pip install pydantic==1.10.13")
 # os.system("python -m spacy download en_core_web_sm")
 
-from helper_functions.set_env_variables import load_env_variables
-import tempfile
-import pandas as pd
-import gradio as gr
-from trulens_eval import Tru, TruBasicApp
-from chain import define_feedback, simplify_text, explain_term
-from observability.observability import GradioHTML, SimpleEnglishClassifier
 
 load_env_variables()
 
@@ -99,7 +101,7 @@ title = """
 </picture>
 
 # Let's go and simplif-AI
-Our application can be used to simplify texts to make them more accesible
+Our application can be used to simplify texts to make them more accessible
 """
 
 # Gradio UI for the fronted
@@ -159,7 +161,7 @@ with gr.Blocks(theme=theme) as demo:
         input_textbox = gr.Textbox(lines=5, placeholder="Put your text here...")
         submit_butn2 = gr.Button("Submit")
         explain_output = gr.HighlightedText(
-            label="COMPLEXITY ATTRIBUTION",
+            label="SIMPLICITY ATTRIBUTION",
             interactive=True,
             combine_adjacent=True,
             show_legend=True,
@@ -167,4 +169,6 @@ with gr.Blocks(theme=theme) as demo:
 
         submit_butn2.click(fn=classify, inputs=input_textbox, outputs=explain_output)
 
-demo.launch(server_name="0.0.0.0")
+
+if __name__ == "__main__":
+    demo.launch(server_name="0.0.0.0")
