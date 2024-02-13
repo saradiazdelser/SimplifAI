@@ -106,3 +106,17 @@ Input concept: {concept}
 Output:""",
     "variables": ["answer_text", "concept"],
 }
+
+
+all_prompts = {
+    'VertexAI': {
+        'simplify': SIMPLE_ENGLISH_PROMPT, 
+        'explain': SIMPLE_CONCEPT_PROMPT,
+        'evaluate': EVAL_PROMPT_MIXTRAL
+        },
+    'CTC_Madrid': {
+        'simplify': SIMPLE_ENGLISH_PROMPT_MIXTRAL,
+        'explain': SIMPLE_CONCEPT_PROMPT_MIXTRAL,
+        'evaluate': EVAL_PROMPT_MIXTRAL
+        }
+}

@@ -1,12 +1,25 @@
-from typing import List
 import os
 import re
+from typing import List
+
 from langchain.chains import LLMChain
-from langchain_community.llms import HuggingFaceTextGenInference, VertexAI
 from langchain.prompts import PromptTemplate
+from langchain_community.llms import HuggingFaceTextGenInference, VertexAI
 from trulens_eval import Feedback, Huggingface
+
 from custom_feedback import custom
-from prompts import SIMPLE_CONCEPT_PROMPT, SIMPLE_ENGLISH_PROMPT, SIMPLE_CONCEPT_PROMPT_MIXTRAL, SIMPLE_ENGLISH_PROMPT_MIXTRAL, EVAL_PROMPT_MIXTRAL
+from prompts import all_prompts
+
+mixtral_config = {
+    "inference_server_url":"http://10.10.78.11:8081/",
+    "max_new_tokens":512,
+    "top_k":10,
+    "top_p":0.95,
+    "typical_p":0.95,
+    "temperature":0.01,
+}
+
+
 hugs = Huggingface()
 
 def define_feedback() -> List[Feedback]:
@@ -25,92 +38,60 @@ def define_feedback() -> List[Feedback]:
     feedbacks = [is_simpler, ps_ratio_out, bleuscore, perplexityscore]
 
     return feedbacks
-    
-
-def simplify_text(original_text: str):
-    if len(original_text) < 50:
-        return "Please input a longer text. Minimun 50 characters."
-
-    if os.environ["ModelType"] == "VertexAI":
-        llm = VertexAI()
-        prompt_template = PromptTemplate(
-            template=SIMPLE_ENGLISH_PROMPT["prompt_text"],
-            input_variables=SIMPLE_ENGLISH_PROMPT["variables"],
-        )
-
-    elif os.environ["ModelType"] == "CTC_Madrid":
-        llm = HuggingFaceTextGenInference(
-            inference_server_url="http://10.10.78.11:8081/",
-            max_new_tokens=512,
-            top_k=10,
-            top_p=0.95,
-            typical_p=0.95,
-            temperature=0.01,
-            # repetition_penalty=1.03,
-        )
-        prompt_template = PromptTemplate(
-            template=SIMPLE_ENGLISH_PROMPT_MIXTRAL["prompt_text"],
-            input_variables=SIMPLE_ENGLISH_PROMPT_MIXTRAL["variables"],
-        )
-
-    chain = LLMChain(llm=llm, prompt=prompt_template)
-    llm_response = chain({"text": original_text})
-    llm_response = format_response(llm_response)
-    
-    # eval_response = evaluate_response(llm=llm,input_text=original_text,output_text=llm_response)
-    # print("PROMPT:\n",prompt_template.template, "\nRESPONSE:\n", llm_response, "\nEVALUATION\n", eval_response)
-    
-    return llm_response
 
 
 def format_response(llm_response:str)->str:
     # it's a known issue that mixtral generates lists
-    llm_response = llm_response["text"].strip().replace(". ", ".\n")
+    llm_response = llm_response.replace(". ", ".\n")
     llm_response = re.sub(r"^\d\.\n|\n\d\.\n", "\n", llm_response).strip()
     return llm_response
 
-
-def evaluate_response(llm, input_text, output_text):
-    prompt_template = PromptTemplate(
-        template=EVAL_PROMPT_MIXTRAL["prompt_text"],
-        input_variables=EVAL_PROMPT_MIXTRAL["variables"],
-    )
-    chain = LLMChain(llm=llm, prompt=prompt_template)
-    eval_response = chain({"input_text": input_text, "ouput_text":output_text})
-
-    return eval_response["text"].strip()
-
-def explain_term(answer_text: str, concept: str):
-    prompt_template = PromptTemplate(
-        template=SIMPLE_CONCEPT_PROMPT["prompt_text"],
-        input_variables=SIMPLE_CONCEPT_PROMPT["variables"],
-    )
-
-    if os.environ["ModelType"] == "VertexAI":
+def execute_chain(task:str, input:dict, format:bool=False)-> str:
+    """Executes a chain for a given task"""
+    provider = os.environ["ModelType"]
+    
+    if provider == "VertexAI":
         llm = VertexAI()
-        prompt_template = PromptTemplate(
-            template=SIMPLE_CONCEPT_PROMPT["prompt_text"],
-            input_variables=SIMPLE_CONCEPT_PROMPT["variables"],
-        )
 
+    elif provider == "CTC_Madrid":
+        llm = HuggingFaceTextGenInference(**mixtral_config)
+        
+    else:
+        raise Exception('Missing `ModelType` configuration setting. Please set the enviornment variable `ModelType`.\n export ModelType=\'CTC_Madrid\'')
 
-    elif os.environ["ModelType"] == "CTC_Madrid":
-        llm = HuggingFaceTextGenInference(
-            inference_server_url="http://10.10.78.11:8081/",
-            max_new_tokens=512,
-            top_k=10,
-            top_p=0.95,
-            typical_p=0.95,
-            temperature=0.01,
-            # repetition_penalty=1.03,
-        )
-        prompt_template = PromptTemplate(
-            template=SIMPLE_CONCEPT_PROMPT_MIXTRAL["prompt_text"],
-            input_variables=SIMPLE_CONCEPT_PROMPT_MIXTRAL["variables"],
-        )
+    # set prompt
+    prompt = all_prompts[provider][task]
+    prompt_template = PromptTemplate(
+        template=prompt["prompt_text"],
+        input_variables=prompt["variables"],
+    )
 
     chain = LLMChain(llm=llm, prompt=prompt_template)
-    llm_response = chain({"answer_text": answer_text, "concept": concept})
-    llm_response = format_response(llm_response)
+    llm_response = chain(input)["text"].strip()
+    if format:
+        llm_response = format_response(llm_response)
+    return llm_response
+
+
+def evaluate_response(input_text:str, output_text:str)-> str:
+    llm_response = execute_chain('evaluate',{"input_text": input_text, "ouput_text":output_text}, format=False)
+    return llm_response
+
+
+def simplify_text(original_text: str, evaluate:bool=False)-> str:
+    if len(original_text) < 50:
+        return "Please input a longer text. Minimun 50 characters."
+
+    llm_response = execute_chain('simplify',{'text':original_text})
+    
+    if evaluate:
+        eval_response = evaluate_response(original_text, llm_response)
+        print("\nRESPONSE:\n", llm_response, "\nEVALUATION\n", eval_response)
 
     return llm_response
+
+def explain_term(answer_text: str, concept: str)-> str:
+    llm_response = execute_chain('explain',{"answer_text": answer_text, "concept": concept})
+    return llm_response
+
+
