@@ -1,4 +1,4 @@
-SIMPLE_ENGLISH_PROMPT_MIXTRAL = {
+SIMPLE_ENGLISH_PROMPT_MIXTRAL_0SHOT = {
     "prompt_text": """[INST] Re-write the input text into a Simple English text.
 Simple English is a version of the English language that aims to present information in a way that is easy to understand for individuals with learning disabilities. 
 Texts in Simple English must follow these requirements:
@@ -40,7 +40,7 @@ Score: [/INST] """,
     "variables": ["input_text", "output_text"],
 }
 
-SIMPLE_CONCEPT_PROMPT_MIXTRAL = {
+SIMPLE_CONCEPT_PROMPT_MIXTRAL_0SHOT = {
     "prompt_text": """[INST] Explain the following concept in Simple English within the given context. 
 Simple English is a version of the English language that aims to present information in a way that is easy to understand for individuals with learning disabilities. 
 Texts in Simple English must follow these requirements:
@@ -108,6 +108,37 @@ Output:""",
 }
 
 
+SIMPLE_ENGLISH_PROMPT_MIXTRAL_2SHOT = {
+    'prompt_text' :
+"""[INST] Rewrite the input text into a simpler and easier to understand ouput text. This output text is meant for people with learning and cognitive disabilities. Follow these two examples:
+ 
+Original input text: The capybara or greater capybara (Hydrochoerus hydrochaeris) is a giant cavy rodent native to South America. It is the largest living rodent and a member of the genus Hydrochoerus. The only other extant member is the lesser capybara (Hydrochoerus isthmius). Its close relatives include guinea pigs and rock cavies, and it is more distantly related to the agouti, the chinchilla, and the nutria. The capybara inhabits savannas and dense forests, and lives near bodies of water. It is a highly social species and can be found in groups as large as 100 individuals, but usually live in groups of 10-20 individuals. The capybara is hunted for its meat and hide and also for grease from its thick fatty skin.
+Simpler output text: The capybara is a big rodent.\nThe capybara lives in South America.\nThe capybara is the biggest rodent alive.\nIt lives in South America.\nCapybaras are part of the Hydrochoerus family.\nOther similar animals are: guinea pigs, rock cavies, chinchillas and otters.\nThe capybara lives in savannas and rainforests.\nThe capybara lives near places with water.\nThe capybara is a social animal.\nThe capybara lives in groups.\nHumans hunt capybaras because of their meat and their fat."
+
+Original input text: The requirements for the front line of air traffic control are a poor match for AI's capabilities. People expect air traffic to continue to be the safest complex, high-technology system ever.It achieves this standard by adhering to procedures when practical, which is something AI can do, and by adapting and exercising good judgment whenever something unplanned occurs or a new operation is implemented - a notable weakness of today's AI. Indeed, it is when conditions are the worst - when controllers figure out how to handle aircraft with severe problems, airport crises or widespread airspace closures due to security concerns or infrastructure failures - that controllers' contributions to safety are the greatest.
+Simpler output text: Air traffic control needs skills that Artificial Intelligence does not have.\nAir traffic systems are difficult technology systems.\nPeople think air traffic systems are very safe systems.\n Air traffic systems can take good decisions in unexpected situations.\nAir traffic systems adapt to changes.\nArtificial Intelligence adapts worse than air traffic systems.\nAir controllers help mantain security and safety specially when there are problems.
+
+Input text:\n{text}
+Output text: [/INST]""",
+    'variables' : ['text']
+}
+
+SIMPLE_CONCEPT_PROMPT_MIXTRAL_2SHOT = {
+     'prompt_text' :
+"""[INST] Define the input concept taking into account the given input context. Define it in simpler and easier to understand way. This definition is meant for people with learning and cognitive disabilities. Follow these two examples:
+ 
+Input concept: Savanna
+Simple definition: \nThe Savanna is a type of ecosystem.\nThe Savanna is found in tropical regions.\nThere is grass and some trees in the Savanna.\nSavannas typically have warm temperatures.\nSavannas have both wet and dry seasons.\nLots of animals live in the Savannas.\nAnimales like zebras and lions live in the Savanna.
+ 
+Input concept: Air Controller
+Simple definition: \nAn air controller is a person.\nAn air controller helps guide airplanes safely.\nThey give instructions to airplanes in the sky and at airports.\nAir controllers make sure: planes take off and planes land.\nThey make sure planes fly in the right direction without bumping into each other.
+
+Input context:\n{answer_text}
+Input concept:\n{concept}
+Simple definition: [/INST]""",
+    'variables' : ['answer_text', 'concept']
+}
+
 all_prompts = {
     'VertexAI': {
         'simplify': SIMPLE_ENGLISH_PROMPT, 
@@ -115,8 +146,8 @@ all_prompts = {
         'evaluate': EVAL_PROMPT_MIXTRAL
         },
     'CTC_Madrid': {
-        'simplify': SIMPLE_ENGLISH_PROMPT_MIXTRAL,
-        'explain': SIMPLE_CONCEPT_PROMPT_MIXTRAL,
+        'simplify': SIMPLE_ENGLISH_PROMPT_MIXTRAL_2SHOT,
+        'explain': SIMPLE_CONCEPT_PROMPT_MIXTRAL_2SHOT,
         'evaluate': EVAL_PROMPT_MIXTRAL
         }
 }
