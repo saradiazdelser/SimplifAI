@@ -43,10 +43,10 @@ def define_feedback() -> List[Feedback]:
 def format_response(llm_response:str)->str:
     # it's a known issue that mixtral generates lists
     llm_response = llm_response.replace(". ", ".\n")
-    llm_response = re.sub(r"^\d\.\n|\n\d\.\n", "\n", llm_response).strip()
+    llm_response = re.sub(r"^\d\.\n|\n\d\.\n|\n\d\d\.\n", "\n", llm_response).strip()
     return llm_response
 
-def execute_chain(task:str, input:dict, format:bool=False)-> str:
+def execute_chain(task:str, input:dict, format:bool=True)-> str:
     """Executes a chain for a given task"""
     provider = os.environ["ModelType"]
     
@@ -74,8 +74,8 @@ def execute_chain(task:str, input:dict, format:bool=False)-> str:
 
 
 def evaluate_response(input_text:str, output_text:str)-> str:
-    llm_response = execute_chain('evaluate',{"input_text": input_text, "ouput_text":output_text}, format=False)
-    return llm_response
+    eval_response = execute_chain('evaluate',{"input_text": input_text, "ouput_text":output_text}, format=False)
+    print("\nRESPONSE:\n", output_text, "\nEVALUATION\n", eval_response)
 
 
 def simplify_text(original_text: str, evaluate:bool=False)-> str:
@@ -85,8 +85,7 @@ def simplify_text(original_text: str, evaluate:bool=False)-> str:
     llm_response = execute_chain('simplify',{'text':original_text})
     
     if evaluate:
-        eval_response = evaluate_response(original_text, llm_response)
-        print("\nRESPONSE:\n", llm_response, "\nEVALUATION\n", eval_response)
+        evaluate_response(original_text, llm_response)
 
     return llm_response
 
