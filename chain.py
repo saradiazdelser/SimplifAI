@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 from typing import List
@@ -24,24 +25,18 @@ hugs = Huggingface()
 
 def define_feedback() -> List[Feedback]:
     langmatch = Feedback(hugs.language_match).on_input_output()
-    
     not_toxic = Feedback(hugs.not_toxic).on_output()
-
     is_simpler = Feedback(custom.is_simpler).on_input_output()
-
     ps_ratio_out = Feedback(custom.pron_subjects_ratio).on_output()
-
     bleuscore = Feedback(custom.bleu).on_input_output()
-
     perplexityscore = Feedback(custom.perplexity).on_output()
-
     feedbacks = [is_simpler, ps_ratio_out, bleuscore, perplexityscore]
 
     return feedbacks
 
 
 def format_response(llm_response:str)->str:
-    # it's a known issue that mixtral generates lists
+    # it's a known issue that mixtral generates lists and/or numbered paragraphs, this removes them
     llm_response = llm_response.replace(". ", ".\n")
     llm_response = re.sub(r"^\d\.\n|\n\d\.\n|\n\d\d\.\n", "\n", llm_response).strip()
     return llm_response
@@ -49,6 +44,7 @@ def format_response(llm_response:str)->str:
 def execute_chain(task:str, input:dict, format:bool=True)-> str:
     """Executes a chain for a given task"""
     provider = os.environ["ModelType"]
+    logging.info(f'ModelType set. Using {provider}.')
     
     if provider == "VertexAI":
         llm = VertexAI()
@@ -65,11 +61,14 @@ def execute_chain(task:str, input:dict, format:bool=True)-> str:
         template=prompt["prompt_text"],
         input_variables=prompt["variables"],
     )
-
     chain = LLMChain(llm=llm, prompt=prompt_template)
     llm_response = chain(input)["text"].strip()
+    logging.info(f'PromptTemplate:\n{prompt_template.template}\nInput:\n{input}\nOutput:\n{llm_response}')
+
     if format:
         llm_response = format_response(llm_response)
+        logging.info(f'Formatted Response.\nOutput:\n{llm_response}')
+        
     return llm_response
 
 

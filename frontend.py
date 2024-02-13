@@ -1,3 +1,4 @@
+import logging
 import os
 import tempfile
 
@@ -8,6 +9,8 @@ from trulens_eval import Tru, TruBasicApp
 from chain import define_feedback, explain_term, simplify_text
 from helper_functions.set_env_variables import load_env_variables
 from observability.observability import GradioHTML, SimpleEnglishClassifier
+
+logging.basicConfig(filename='app.log', encoding='utf-8', level=logging.INFO, format='%(asctime)s %(message)s')
 
 # uncomment these lines if running on HuggingFace
 # os.system("pip uninstall -y gradio")
