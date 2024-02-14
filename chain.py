@@ -38,7 +38,7 @@ def define_feedback() -> List[Feedback]:
 def format_response(llm_response:str)->str:
     # it's a known issue that mixtral generates lists and/or numbered paragraphs, this removes them
     llm_response = llm_response.replace(". ", ".\n")
-    llm_response = re.sub(r"^\d\.\n|\n\d\.\n|\n\d\d\.\n", "\n", llm_response).strip()
+    llm_response = re.sub(r"^\d\.\n|\n\d\.\n|\n\d\d\.\n|\n *[-*] *\w", "\n", llm_response).strip()
     return llm_response
 
 def execute_chain(task:str, input:dict, format:bool=True)-> str:
