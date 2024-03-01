@@ -22,7 +22,7 @@ EVAL_PROMPT_MIXTRAL = {
     "prompt_text": """[INST] Assign a score (0-10 points) to the translation of the following text from English to Simple English.
 Simple English is a version of the English language that aims to present information in a way that is easy to understand for individuals with limited proficiency in English or those who are learning the language. 
 Texts in Simple English must follow these 10 requirements. Assing 1 point per requirement met.
-1. Each sentences expresses only one idea.
+1. Each sentence expresses only one idea.
 2. The subject of each sentence must be explicit. Do not use pronouns as subjects.
 3. Use short sentences and simple vocabulary. Use simple and direct language.
 4. Do not use negations.
