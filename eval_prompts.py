@@ -46,6 +46,9 @@ REQUIREMENT_2 = {
     "variables": ["text"],
 }
 
+simplified_text = "The Savanna is a type of ecosystem.\nThe Savanna is found in tropical regions.\nSavannas typically have warm temperatures.\nSavannas have both wet and dry seasons.\nLots of animals live in the Savannas."
+simplified_text_2= "The Savanna has from 800 to 3300 trees per hectare.\nSavannas typically have temperatures of 50 degrees.\nSavanna covers approximately 20 percentage of the Earth's land area."
+simplified_text_3 = "The Savanna is a type of ecosystem.\nThe Savanna is found in tropical regions.\nThe Savanna has from 800 to 3300 trees per hectare.\nSavannas typically have temperatures of 50 degrees."
 
 REQUIREMENT_5 = {
     "prompt_text": """<s>[INST] Assign a score to the given text. The requirement of each sentence is 'Do not use too many numbers'.
