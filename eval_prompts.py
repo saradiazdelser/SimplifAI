@@ -70,3 +70,29 @@ REQUIREMENT_5 = {
 """,
     "variables": ["text"],
 }
+
+
+REQUIREMENT_8 = {
+    "prompt_text": """<s>[INST] Assign a score to the text according to the following requirement: 'Does not contain technical terms, abbreviations or initials'.
+    The output must be a number without explanations.
+    The score will be a number from 0 to 10. A score of '10' means every sentence in the text meets the requirement, and a score of '0' means none of the sentences in the text meet the requirement.
+    
+    Text 1: "The capybara or greater capybara (Hydrochoerus hydrochaeris) is a giant cavy rodent native to South America (SA).\nIt is the largest living rodent and a member of the genus Hydrochoerus.\nThe only other extant member is the lesser capybara (Hydrochoerus isthmius).\nIts phylogenetic relatives encompass guinea pigs and rock cavies, while more distant relations include the agouti, chinchilla, and nutria.\n
+    Score (0-10): 0 points
+    
+    Text 2: "The capybara is a big rodent that comes from South America.\nIt's the biggest rodent around today.\nIt's related to guinea pigs and rock cavies, and also has more distant connections to the agouti, chinchilla, and nutria.\n"
+    Score (0-10): 10 points
+    
+    Text 3: "The capybara or greater capybara (Hydrochoerus hydrochaeris) is a giant cavy rodent native to South America.\nIt is the largest living rodent in the world.\nThe only other extant member is the lesser capybara (Hydrochoerus isthmius).\nIt's related to guinea pigs and rock cavies, and also has more distant connections to the agouti, chinchilla, and nutria.\n
+    Score (0-10): 5 points
+    [/INST]</s> 
+
+    [INST] Assign a score to the text according to the following requirement: 'Does not contain technical terms, abbreviations or initials'.
+    The output must be a number without explanations.
+    The score will be a number from 0 to 10. A score of '10' means every sentence in the text meets the requirement, and a score of '0' means none of the sentences in the text meet the requirement.
+    
+    Text 4: "{text}"
+    Score (0-10): [/INST] 
+""",
+    "variables": ["text"],
+}
