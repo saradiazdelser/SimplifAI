@@ -30,7 +30,18 @@ def define_feedback() -> List[Feedback]:
     ps_ratio_out = Feedback(custom.pron_subjects_ratio).on_output()
     bleuscore = Feedback(custom.bleu).on_input_output()
     perplexityscore = Feedback(custom.perplexity).on_output()
-    feedbacks = [is_simpler, ps_ratio_out, bleuscore, perplexityscore]
+    
+    requirement_1 = Feedback(custom.requirement_1).on_output()
+    requirement_2 = Feedback(custom.requirement_2).on_output()
+    requirement_3 = Feedback(custom.requirement_3).on_output()
+    requirement_4 = Feedback(custom.requirement_4).on_output()
+    requirement_5 = Feedback(custom.requirement_5).on_output()
+    requirement_8 = Feedback(custom.requirement_8).on_output()
+
+    
+    feedbacks = [is_simpler, ps_ratio_out, bleuscore, perplexityscore, 
+                 requirement_1, requirement_2,requirement_3,requirement_4,
+                 requirement_5,requirement_8]
 
     return feedbacks
 
