@@ -31,12 +31,12 @@ def define_feedback() -> List[Feedback]:
     bleuscore = Feedback(custom.bleu).on_input_output()
     perplexityscore = Feedback(custom.perplexity).on_output()
     
-    requirement_1 = Feedback(custom.requirement_1).on_output()
-    requirement_2 = Feedback(custom.requirement_2).on_output()
-    requirement_3 = Feedback(custom.requirement_3).on_output()
-    requirement_4 = Feedback(custom.requirement_4).on_output()
-    requirement_5 = Feedback(custom.requirement_5).on_output()
-    requirement_8 = Feedback(custom.requirement_8).on_output()
+    requirement_1 = Feedback(custom.one_idea_sentence).on_output()
+    requirement_2 = Feedback(custom.explicit_subject).on_output()
+    requirement_3 = Feedback(custom.short_sentence).on_output()
+    requirement_4 = Feedback(custom.no_negations).on_output()
+    requirement_5 = Feedback(custom.no_many_numbers).on_output()
+    requirement_8 = Feedback(custom.technical_terms).on_output()
 
     
     feedbacks = [is_simpler, ps_ratio_out, bleuscore, perplexityscore, 

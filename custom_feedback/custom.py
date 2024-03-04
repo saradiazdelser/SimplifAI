@@ -135,26 +135,28 @@ def perplexity(text:str) -> float:
     score = perplexity_score['mean_perplexity'] if perplexity_score['mean_perplexity'] else 0.0
     return float(score)
 
-def requirement_1(text:str) -> float:
+
+
+def one_idea_sentence(text:str) -> float:
     score = execute_chain(simplified_text=text, prompt=eval_prompts.REQUIREMENT_1)
     return float(score)
 
-def requirement_2(text:str) -> float:
+def explicit_subject(text:str) -> float:
     score = execute_chain(simplified_text=text, prompt=eval_prompts.REQUIREMENT_2)
     return float(score)
 
-def requirement_3(text:str) -> float:
+def short_sentence(text:str) -> float:
     score = execute_chain(simplified_text=text, prompt=eval_prompts.REQUIREMENT_3)
     return float(score)
 
-def requirement_4(text:str) -> float:
+def no_negations(text:str) -> float:
     score = execute_chain(simplified_text=text, prompt=eval_prompts.REQUIREMENT_4)
     return float(score)
 
-def requirement_5(text:str) -> float:
+def no_many_numbers(text:str) -> float:
     score = execute_chain(simplified_text=text, prompt=eval_prompts.REQUIREMENT_5)
     return float(score)
 
-def requirement_8(text:str) -> float:
+def technical_terms(text:str) -> float:
     score = execute_chain(simplified_text=text, prompt=eval_prompts.REQUIREMENT_8)
     return float(score)
