@@ -139,6 +139,38 @@ Simple definition: [/INST]""",
     'variables' : ['answer_text', 'concept']
 }
 
+
+SIMPLE_ENGLISH_PROMPT_MIXTRAL_FEWSHOT = {
+'prompt_text' :
+"""Instruction: Rewrite the input text into a simpler and easier to understand ouput text. This output text is meant for people with learning and cognitive disabilities. Follow these two examples:
+ 
+Original input text: The capybara or greater capybara (Hydrochoerus hydrochaeris) is a giant cavy rodent native to South America. It is the largest living rodent and a member of the genus Hydrochoerus. The only other extant member is the lesser capybara (Hydrochoerus isthmius). Its close relatives include guinea pigs and rock cavies, and it is more distantly related to the agouti, the chinchilla, and the nutria. The capybara inhabits savannas and dense forests, and lives near bodies of water. It is a highly social species and can be found in groups as large as 100 individuals, but usually live in groups of 10–20 individuals. The capybara is hunted for its meat and hide and also for grease from its thick fatty skin.
+Simpler output text: The capybara is a big rodent.\n The capybara lives in South America.\n The capybara is the biggest rodent alive.\n It lives in South America.\n Capybaras are part of the Hydrochoerus family.\n Other similar animals are: guinea pigs, rock cavies, chinchillas and otters.\n The capybara lives in savannas and rainforests.\n The capybara lives near places with water.\n The capybara is a social animal.\n The capybara lives in groups.\n Humans hunt capybaras because of their meat and their fat."
+ 
+Original input text: The requirements for the front line of air traffic control are a poor match for AI’s capabilities. People expect air traffic to continue to be the safest complex, high-technology system ever. It achieves this standard by adhering to procedures when practical, which is something AI can do, and by adapting and exercising good judgment whenever something unplanned occurs or a new operation is implemented – a notable weakness of today’s AI. Indeed, it is when conditions are the worst – when controllers figure out how to handle aircraft with severe problems, airport crises or widespread airspace closures due to security concerns or infrastructure failures – that controllers’ contributions to safety are the greatest.
+Simpler output text: Air traffic control needs skills that Artificial Intelligence does not have.\n Air traffic systems are difficult technology systems.\n People think air traffic systems are very safe systems.\n Air traffic systems can take good decisions in unexpected situations.\n Air traffic systems adapt to changes.\n Artificial Intelligence adapts worse than air traffic systems.\n Air controllers help mantain security and safety specially when there are problems.
+ 
+Input text:
+{text}
+Output text: """,
+    'variables' : ['text']
+}
+
+SIMPLE_CONCEPT_PROMPT_MIXTRAL_FEWSHOT = {
+'prompt_text' :
+"""Instruction: Define the input concept taking into account the given input context. Define it in simpler and easier to understand way. This definition is meant for people with learning and cognitive disabilities. Follow these two examples:
+ 
+Input concept: Savanna
+Simple output Definition: The Savanna is a type of ecosystem.\n The Savanna is found in tropical regions.\n There is grass and some trees in the Savanna.\n Savannas typically have warm temperatures.\n Savannas have both wet and dry seasons.\n Lots of animals live in the Savannas.\n Animales like zebras and lions live in the Savanna.
+ 
+Input concept: Air Controller
+Simple output Definition: An air controller is a person.\n An air controller helps guide airplanes safely.\n They give instructions to airplanes in the sky and at airports.\n  Air controllers make sure: planes take off and planes land.\n They make sure planes fly in the right direction without bumping into each other.\n
+Input context: {answer_text}
+Input concept: {concept}
+Output:""",
+    'variables' : ['answer_text', 'concept']
+}
+
 all_prompts = {
     'VertexAI': {
         'simplify': SIMPLE_ENGLISH_PROMPT, 
@@ -146,8 +178,8 @@ all_prompts = {
         'evaluate': EVAL_PROMPT_MIXTRAL
         },
     'CTC_Madrid': {
-        'simplify': SIMPLE_ENGLISH_PROMPT_MIXTRAL_2SHOT,
-        'explain': SIMPLE_CONCEPT_PROMPT_MIXTRAL_2SHOT,
+        'simplify': SIMPLE_ENGLISH_PROMPT_MIXTRAL_FEWSHOT,
+        'explain': SIMPLE_CONCEPT_PROMPT_MIXTRAL_FEWSHOT,
         'evaluate': EVAL_PROMPT_MIXTRAL
         }
 }
