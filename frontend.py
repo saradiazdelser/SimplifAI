@@ -102,7 +102,7 @@ theme = gr.themes.Default(
 
 title = """
 <picture>
-  <img alt="WhisperSpeech banner with Collabora and LAION logos" src="https://huggingface.co/spaces/jocowhite/SimplifAI/resolve/main/logo.png" style="width: 14%; margin-bottom: 10px;" />
+  <img alt="Logo" src="https://raw.githubusercontent.com/saradiazdelser/SimplifAI/main/logo.png" style="width: 14%; margin-bottom: 10px;" />
 </picture>
 
 # Let's go and simplif-AI
