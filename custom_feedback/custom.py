@@ -4,6 +4,9 @@ import evaluate as eval
 import spacy
 from bert_score import BERTScorer
 
+import custom_feedback.eval_prompts as eval_prompts
+from custom_feedback.chain_prompts import execute_chain
+
 # TODO: add requirements
 
 # load spaCy model
@@ -130,4 +133,30 @@ def perplexity(text:str) -> float:
     perplexity = eval.load("perplexity", module_type="metric")
     perplexity_score = perplexity.compute(predictions=[text], model_id='gpt2')
     score = perplexity_score['mean_perplexity'] if perplexity_score['mean_perplexity'] else 0.0
+    return float(score)
+
+
+
+def one_idea_sentence(text:str) -> float:
+    score = execute_chain(simplified_text=text, prompt=eval_prompts.REQUIREMENT_1)
+    return float(score)
+
+def explicit_subject(text:str) -> float:
+    score = execute_chain(simplified_text=text, prompt=eval_prompts.REQUIREMENT_2)
+    return float(score)
+
+def short_sentence(text:str) -> float:
+    score = execute_chain(simplified_text=text, prompt=eval_prompts.REQUIREMENT_3)
+    return float(score)
+
+def no_negations(text:str) -> float:
+    score = execute_chain(simplified_text=text, prompt=eval_prompts.REQUIREMENT_4)
+    return float(score)
+
+def no_many_numbers(text:str) -> float:
+    score = execute_chain(simplified_text=text, prompt=eval_prompts.REQUIREMENT_5)
+    return float(score)
+
+def technical_terms(text:str) -> float:
+    score = execute_chain(simplified_text=text, prompt=eval_prompts.REQUIREMENT_8)
     return float(score)

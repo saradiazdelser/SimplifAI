@@ -30,7 +30,18 @@ def define_feedback() -> List[Feedback]:
     ps_ratio_out = Feedback(custom.pron_subjects_ratio).on_output()
     bleuscore = Feedback(custom.bleu).on_input_output()
     perplexityscore = Feedback(custom.perplexity).on_output()
-    feedbacks = [is_simpler, ps_ratio_out, bleuscore, perplexityscore]
+    
+    requirement_1 = Feedback(custom.one_idea_sentence).on_output()
+    requirement_2 = Feedback(custom.explicit_subject).on_output()
+    requirement_3 = Feedback(custom.short_sentence).on_output()
+    requirement_4 = Feedback(custom.no_negations).on_output()
+    requirement_5 = Feedback(custom.no_many_numbers).on_output()
+    requirement_8 = Feedback(custom.technical_terms).on_output()
+
+    
+    feedbacks = [is_simpler, ps_ratio_out, bleuscore, perplexityscore, 
+                 requirement_1, requirement_2,requirement_3,requirement_4,
+                 requirement_5,requirement_8]
 
     return feedbacks
 
@@ -71,6 +82,12 @@ def execute_chain(task:str, input:dict, format:bool=True)-> str:
         
     return llm_response
 
+def output_parser(output_text:str) -> float:
+    """Extracts numerical score from LLM response text"""
+    m = re.search('\d+', output_text)
+    if m:
+        return float(m.group())
+    return 0.0
 
 def evaluate_response(input_text:str, output_text:str)-> str:
     eval_response = execute_chain('evaluate',{"input_text": input_text, "ouput_text":output_text}, format=False)
@@ -81,15 +98,32 @@ def simplify_text(original_text: str, evaluate:bool=False)-> str:
     if len(original_text) < 50:
         return "Please input a longer text. Minimun 50 characters."
 
-    llm_response = execute_chain('simplify',{'text':original_text})
-    
-    if evaluate:
-        evaluate_response(original_text, llm_response)
+    output_text = execute_chain('simplify',{'text':original_text})
 
-    return llm_response
+    # Second Round
+    # eval_response = execute_chain('evaluate',{"input_text": original_text, "ouput_text":output_text}, format=False)
+    # score = output_parser(eval_response)
+    # print(f'Score: {score}. Explanation: {eval_response}')
+
+    # if score <7:
+    #     print(f'Second round.')
+        # output_text = execute_chain('simplify',{'text':output_text})
+
+    if evaluate:
+        evaluate_response(original_text, output_text)
+
+    return output_text
 
 def explain_term(answer_text: str, concept: str)-> str:
     llm_response = execute_chain('explain',{"answer_text": answer_text, "concept": concept})
+    
+    # Split the response into lines
+    response_lines = llm_response.split('\n')
+ 
+    # Ensure the response has at most 10 lines
+    if len(response_lines) > 10:
+        llm_response = '\n'.join(response_lines[:10])
+        
     return llm_response
 
 

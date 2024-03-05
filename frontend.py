@@ -61,7 +61,9 @@ def get_trulens_feedback():
     # pass an empty list of app_ids to get all
     df = tru.get_records_and_feedback(app_ids=[f"simplifAI-app-v{version}"])[0]
 
-    interesting_metrcs = ["language_match","pron_subjects_ratio","is_simpler","bleu","perplexity"]
+    interesting_metrcs = ["language_match","pron_subjects_ratio","is_simpler","bleu","perplexity",
+                          "one_idea_sentence", "explicit_subject","short_sentence","no_negations",
+                        "no_many_numbers","technical_terms"]
     
     sub_df = pd.DataFrame()
     for metric in interesting_metrcs:
