@@ -13,5 +13,3 @@ The target audience for our web app is broad, encompassing individuals with lear
 
 The unique benefit lies in the simplicity of our solution – a tool that makes information universally accessible, bridging the gap and promoting a more inclusive digital environment.
 
-### Demo
-Check out our demo at: https://huggingface.co/spaces/jocowhite/SimplifAI
