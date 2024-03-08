@@ -181,5 +181,10 @@ all_prompts = {
         'simplify': SIMPLE_ENGLISH_PROMPT_MIXTRAL_FEWSHOT,
         'explain': SIMPLE_CONCEPT_PROMPT_MIXTRAL_FEWSHOT,
         'evaluate': EVAL_PROMPT_MIXTRAL
-        }
+        },
+    'CTC_Boeblingen': {
+        'simplify': SIMPLE_ENGLISH_PROMPT_MIXTRAL_FEWSHOT,
+        'explain': SIMPLE_CONCEPT_PROMPT_MIXTRAL_FEWSHOT,
+        'evaluate': EVAL_PROMPT_MIXTRAL
+        },
 }

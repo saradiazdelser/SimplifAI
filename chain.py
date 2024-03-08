@@ -5,7 +5,7 @@ from typing import List
 
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
-from langchain_community.llms import HuggingFaceTextGenInference, VertexAI
+from langchain_community.llms import HuggingFaceTextGenInference, VertexAI, Ollama
 from trulens_eval import Feedback, Huggingface
 
 from custom_feedback import custom
@@ -62,7 +62,11 @@ def execute_chain(task:str, input:dict, format:bool=True)-> str:
 
     elif provider == "CTC_Madrid":
         llm = HuggingFaceTextGenInference(**mixtral_config)
-        
+    
+    elif provider == "CTC_Boeblingen":
+        llm = Ollama(model="mixtral")
+        llm.base_url = "http://10.1.25.121:11434"
+
     else:
         raise Exception('Missing `ModelType` configuration setting. Please set the enviornment variable `ModelType`.\n export ModelType=\'CTC_Madrid\'')
 
