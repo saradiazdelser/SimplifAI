@@ -14,8 +14,6 @@ RUN pip uninstall -y llama-index-agent-openai llama-index-core llama-index-embed
 RUN pip install llama-index==0.9.11 --upgrade --no-cache-dir --force-reinstall
 RUN pip install pydantic==1.10.14
 
-RUN python -m spacy download en_core_web_sm
-
 COPY . .
 
-CMD python frontend.py
+CMD python app.py

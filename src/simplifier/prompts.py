@@ -109,8 +109,7 @@ Output:""",
 
 
 SIMPLE_ENGLISH_PROMPT_MIXTRAL_2SHOT = {
-    'prompt_text' :
-"""[INST] Rewrite the input text into a simpler and easier to understand ouput text. This output text is meant for people with learning and cognitive disabilities. Follow these two examples:
+    "prompt_text": """[INST] Rewrite the input text into a simpler and easier to understand ouput text. This output text is meant for people with learning and cognitive disabilities. Follow these two examples:
  
 Original input text: The capybara or greater capybara (Hydrochoerus hydrochaeris) is a giant cavy rodent native to South America. It is the largest living rodent and a member of the genus Hydrochoerus. The only other extant member is the lesser capybara (Hydrochoerus isthmius). Its close relatives include guinea pigs and rock cavies, and it is more distantly related to the agouti, the chinchilla, and the nutria. The capybara inhabits savannas and dense forests, and lives near bodies of water. It is a highly social species and can be found in groups as large as 100 individuals, but usually live in groups of 10-20 individuals. The capybara is hunted for its meat and hide and also for grease from its thick fatty skin.
 Simpler output text: The capybara is a big rodent.\nThe capybara lives in South America.\nThe capybara is the biggest rodent alive.\nIt lives in South America.\nCapybaras are part of the Hydrochoerus family.\nOther similar animals are: guinea pigs, rock cavies, chinchillas and otters.\nThe capybara lives in savannas and rainforests.\nThe capybara lives near places with water.\nThe capybara is a social animal.\nThe capybara lives in groups.\nHumans hunt capybaras because of their meat and their fat."
@@ -120,12 +119,11 @@ Simpler output text: Air traffic control needs skills that Artificial Intelligen
 
 Input text:\n{text}
 Output text: [/INST]""",
-    'variables' : ['text']
+    "variables": ["text"],
 }
 
 SIMPLE_CONCEPT_PROMPT_MIXTRAL_2SHOT = {
-     'prompt_text' :
-"""[INST] Define the input concept taking into account the given input context. Define it in simpler and easier to understand way. This definition is meant for people with learning and cognitive disabilities. Follow these two examples:
+    "prompt_text": """[INST] Define the input concept taking into account the given input context. Define it in simpler and easier to understand way. This definition is meant for people with learning and cognitive disabilities. Follow these two examples:
  
 Input concept: Savanna
 Simple definition: \nThe Savanna is a type of ecosystem.\nThe Savanna is found in tropical regions.\nThere is grass and some trees in the Savanna.\nSavannas typically have warm temperatures.\nSavannas have both wet and dry seasons.\nLots of animals live in the Savannas.\nAnimales like zebras and lions live in the Savanna.
@@ -136,13 +134,12 @@ Simple definition: \nAn air controller is a person.\nAn air controller helps gui
 Input context:\n{answer_text}
 Input concept:\n{concept}
 Simple definition: [/INST]""",
-    'variables' : ['answer_text', 'concept']
+    "variables": ["answer_text", "concept"],
 }
 
 
 SIMPLE_ENGLISH_PROMPT_MIXTRAL_FEWSHOT = {
-'prompt_text' :
-"""Instruction: Rewrite the input text into a simpler and easier to understand ouput text. This output text is meant for people with learning and cognitive disabilities. Follow these two examples:
+    "prompt_text": """Instruction: Rewrite the input text into a simpler and easier to understand ouput text. This output text is meant for people with learning and cognitive disabilities. Follow these two examples:
  
 Original input text: The capybara or greater capybara (Hydrochoerus hydrochaeris) is a giant cavy rodent native to South America. It is the largest living rodent and a member of the genus Hydrochoerus. The only other extant member is the lesser capybara (Hydrochoerus isthmius). Its close relatives include guinea pigs and rock cavies, and it is more distantly related to the agouti, the chinchilla, and the nutria. The capybara inhabits savannas and dense forests, and lives near bodies of water. It is a highly social species and can be found in groups as large as 100 individuals, but usually live in groups of 10–20 individuals. The capybara is hunted for its meat and hide and also for grease from its thick fatty skin.
 Simpler output text: The capybara is a big rodent.\n The capybara lives in South America.\n The capybara is the biggest rodent alive.\n It lives in South America.\n Capybaras are part of the Hydrochoerus family.\n Other similar animals are: guinea pigs, rock cavies, chinchillas and otters.\n The capybara lives in savannas and rainforests.\n The capybara lives near places with water.\n The capybara is a social animal.\n The capybara lives in groups.\n Humans hunt capybaras because of their meat and their fat."
@@ -153,12 +150,11 @@ Simpler output text: Air traffic control needs skills that Artificial Intelligen
 Input text:
 {text}
 Output text: """,
-    'variables' : ['text']
+    "variables": ["text"],
 }
 
 SIMPLE_CONCEPT_PROMPT_MIXTRAL_FEWSHOT = {
-'prompt_text' :
-"""Instruction: Define the input concept taking into account the given input context. Define it in simpler and easier to understand way. This definition is meant for people with learning and cognitive disabilities. Follow these two examples:
+    "prompt_text": """Instruction: Define the input concept taking into account the given input context. Define it in simpler and easier to understand way. This definition is meant for people with learning and cognitive disabilities. Follow these two examples:
  
 Input concept: Savanna
 Simple output Definition: The Savanna is a type of ecosystem.\n The Savanna is found in tropical regions.\n There is grass and some trees in the Savanna.\n Savannas typically have warm temperatures.\n Savannas have both wet and dry seasons.\n Lots of animals live in the Savannas.\n Animales like zebras and lions live in the Savanna.
@@ -168,18 +164,11 @@ Simple output Definition: An air controller is a person.\n An air controller hel
 Input context: {answer_text}
 Input concept: {concept}
 Output:""",
-    'variables' : ['answer_text', 'concept']
+    "variables": ["answer_text", "concept"],
 }
 
 all_prompts = {
-    'VertexAI': {
-        'simplify': SIMPLE_ENGLISH_PROMPT, 
-        'explain': SIMPLE_CONCEPT_PROMPT,
-        'evaluate': EVAL_PROMPT_MIXTRAL
-        },
-    'CTC_Madrid': {
-        'simplify': SIMPLE_ENGLISH_PROMPT_MIXTRAL_FEWSHOT,
-        'explain': SIMPLE_CONCEPT_PROMPT_MIXTRAL_FEWSHOT,
-        'evaluate': EVAL_PROMPT_MIXTRAL
-        }
+    "simplify": SIMPLE_ENGLISH_PROMPT_MIXTRAL_FEWSHOT,
+    "explain": SIMPLE_CONCEPT_PROMPT_MIXTRAL_FEWSHOT,
+    "evaluate": EVAL_PROMPT_MIXTRAL,
 }
